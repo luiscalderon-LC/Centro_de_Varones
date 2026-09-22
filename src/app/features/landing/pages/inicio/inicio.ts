@@ -1,23 +1,27 @@
 import { Component } from '@angular/core';
 
-import { Navbar } from '../../components/navbar/navbar';
-import { Hero } from '../../components/hero/hero';
-import { Nosotros } from '../../components/nosotros/nosotros';
+// Componentes Integrante 1
+import { NavbarComponent } from '../../components/navbar/navbar';
+import { HeroComponent } from '../../components/hero/hero';
+import { NosotrosComponent } from '../../components/nosotros/nosotros';
+import { FooterComponent } from '../../components/footer/footer';
+
+// Componentes Integrante 2
 import { Beneficios } from '../../components/beneficios/beneficios';
 import { Caracteristicas } from '../../components/caracteristicas/caracteristicas';
 import { Contacto } from '../../components/contacto/contacto';
-import { Footer } from '../../components/footer/footer';
 
 @Component({
   selector: 'app-inicio',
+  standalone: true,
   imports: [
-    Navbar,
-    Hero,
-    Nosotros,
+    NavbarComponent,
+    HeroComponent,
+    NosotrosComponent,
     Beneficios,
     Caracteristicas,
     Contacto,
-    Footer
+    FooterComponent
   ],
   templateUrl: './inicio.html',
   styleUrl: './inicio.css'
