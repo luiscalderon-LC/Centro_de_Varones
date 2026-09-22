@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 
 @Component({
-  imports: [],
   selector: 'app-caracteristicas',
-  styleUrl: './caracteristicas.css',
+  imports: [],
   templateUrl: './caracteristicas.html',
+  styleUrl: './caracteristicas.css'
 })
-export class Caracteristicas {}
+export class Caracteristicas {
+
+}

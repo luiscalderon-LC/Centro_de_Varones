@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 
 @Component({
-  imports: [],
   selector: 'app-beneficios',
-  styleUrl: './beneficios.css',
+  imports: [],
   templateUrl: './beneficios.html',
+  styleUrl: './beneficios.css'
 })
-export class Beneficios {}
+export class Beneficios {
+
+}

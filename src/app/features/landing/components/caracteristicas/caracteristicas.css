@@ -1,0 +1,102 @@
+.caracteristicas {
+  background: #ffffff;
+  padding: 90px 20px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.caracteristicas-container {
+  max-width: 1150px;
+  margin: 0 auto;
+}
+
+.encabezado {
+  text-align: center;
+  max-width: 750px;
+  margin: 0 auto 50px;
+}
+
+.etiqueta {
+  color: #dc2626;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.encabezado h2 {
+  color: #1e293b;
+  font-size: 36px;
+  margin: 12px 0 16px;
+}
+
+.encabezado p {
+  color: #64748b;
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+.caracteristicas-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+}
+
+.caracteristica-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 32px;
+  transition: all 0.3s ease;
+}
+
+.caracteristica-card:hover {
+  transform: translateY(-6px);
+  border-color: #dc2626;
+  box-shadow: 0 15px 35px rgba(15, 23, 42, 0.12);
+}
+
+.icono {
+  width: 58px;
+  height: 58px;
+  background: #fee2e2;
+  border-radius: 12px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.caracteristica-card h3 {
+  color: #1e293b;
+  font-size: 21px;
+  margin: 0 0 12px;
+}
+
+.caracteristica-card p {
+  color: #64748b;
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+  .caracteristicas {
+    padding: 60px 20px;
+  }
+
+  .caracteristicas-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .encabezado h2 {
+    font-size: 28px;
+  }
+
+  .caracteristica-card {
+    padding: 25px;
+  }
+}
