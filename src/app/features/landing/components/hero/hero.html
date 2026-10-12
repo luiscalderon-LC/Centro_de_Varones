@@ -1,16 +1,73 @@
+
 <section id="inicio" class="hero">
   <div class="hero-container">
+
     <div class="hero-content">
-      <span class="hero-tag">Plataforma Académica Digital</span>
-      <h1>Sistema de Registro de Notas y Desempeño Escolar</h1>
-      <p>
-        Facilitamos el seguimiento académico del Colegio Santa Rita de Cassia.
-        Herramientas eficientes para docentes y acceso transparente para nuestros estudiantes.
+
+      <!-- Línea amarilla superior -->
+      <div class="hero-line"></div>
+
+      <!-- Encabezado -->
+      <span class="hero-tag">SISTEMA ACADÉMICO</span>
+
+      <h1>Bienvenido a nuestro portal de notas</h1>
+
+      <p class="hero-description">
+        Consulta tus calificaciones y gestiona la información
+        académica en un solo lugar.
       </p>
-      <div class="hero-buttons">
-        <a href="#contacto" class="btn-primary-hero">Portal Docente</a>
-        <a href="#beneficios" class="btn-secondary-hero">Consulta Estudiantes</a>
+
+      <h3 class="selection-title">
+        Selecciona cómo deseas ingresar
+      </h3>
+
+      <!-- Tarjetas de acceso -->
+      <div class="access-cards">
+
+        <!-- DOCENTE -->
+        <div class="access-card docente">
+          <div class="access-icon docente-icon">D</div>
+
+          <h2>Soy docente</h2>
+
+          <p>Registrar y revisar calificaciones</p>
+
+          <a routerLink="/login-docente" class="btn-docente">
+            Ingresar como docente
+          </a>
+        </div>
+
+        <!-- ESTUDIANTE -->
+        <div class="access-card estudiante">
+          <div class="access-icon estudiante-icon">E</div>
+
+          <h2>Soy estudiante</h2>
+
+          <p>Consultar notas y promedios</p>
+
+          <a routerLink="/login-estudiante" class="btn-estudiante">
+            Ingresar como alumno
+          </a>
+        </div>
+
       </div>
+
+      <p class="access-note">
+        Acceso exclusivo para docentes y estudiantes registrados
+      </p>
+
     </div>
+
+    <!-- Pie de la pantalla principal -->
+    <div class="hero-footer">
+      <p>
+        Proyecto académico en desarrollo por ·
+        Luis Calderón y Mark Alcalá 🫵
+      </p>
+      <small>
+        I.E. N.° 20874 · San Vicente de Cañete
+      </small>
+    </div>
+
   </div>
 </section>
