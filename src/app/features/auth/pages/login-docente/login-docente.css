@@ -1,0 +1,319 @@
+
+/* LOGIN DOCENTE - CENTRO DE VARONES N.° 20874 */
+
+:host {
+  display: block;
+  font-family: Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* CONTENEDOR PRINCIPAL */
+
+.login-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background-color: #f3f4f6;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ENCABEZADO INSTITUCIONAL */
+
+.login-header {
+  background-color: #b8202c;
+  width: 100%;
+  padding: 12px 30px;
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.institution {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.institution-logo {
+  width: 48px;
+  height: 54px;
+  object-fit: contain;
+  background-color: white;
+  padding: 4px;
+  border-radius: 6px;
+}
+
+.institution-info h2 {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+.institution-info p {
+  color: #fce7e7;
+  font-size: 11px;
+  margin: 0;
+}
+
+.home-link {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.home-link:hover {
+  text-decoration: underline;
+}
+
+/* CONTENIDO CENTRAL */
+
+.login-main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+/* TARJETA BLANCA */
+
+.login-card {
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 420px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 30px 35px;
+  text-align: center;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* ICONO */
+
+.login-icon {
+  width: 55px;
+  height: 55px;
+  background-color: #fde7e9;
+  color: #b8202c;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+  margin: 0 auto 15px;
+}
+
+/* TÍTULOS */
+
+.login-card h1 {
+  color: #303640;
+  font-size: 25px;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+.login-subtitle {
+  color: #89929e;
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0 0 25px;
+}
+
+/* FORMULARIO */
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.login-form label {
+  color: #303640;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* SELECTOR DE USUARIO */
+
+.user-selector {
+  display: flex;
+  background-color: #f3f4f6;
+  border-radius: 6px;
+  padding: 4px;
+  margin-bottom: 22px;
+  gap: 4px;
+}
+
+.user-selector a {
+  flex: 1;
+  text-align: center;
+  text-decoration: none;
+  color: #7b8490;
+  font-size: 12px;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.user-selector a.active {
+  background-color: #b8202c;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* CAMPOS */
+
+.login-form input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d7dce2;
+  border-radius: 6px;
+  background-color: #ffffff;
+  font-size: 13px;
+  color: #303640;
+  outline: none;
+  margin-bottom: 18px;
+}
+
+.login-form input::placeholder {
+  color: #a0a7b1;
+}
+
+.login-form input:focus {
+  border-color: #b8202c;
+  box-shadow: 0 0 0 2px rgba(184, 32, 44, 0.1);
+}
+
+/* RECUPERAR CONTRASEÑA */
+
+.forgot-password {
+  color: #b8202c;
+  font-size: 11px;
+  text-decoration: none;
+  text-align: right;
+  margin: -5px 0 20px;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+/* BOTÓN INGRESAR */
+
+.login-button {
+  width: 100%;
+  background-color: #b8202c;
+  color: #ffffff;
+  border: none;
+  padding: 13px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.login-button:hover {
+  background-color: #971923;
+}
+
+/* PIE DE PÁGINA */
+
+.login-footer {
+  text-align: center;
+  padding: 15px 15px 25px;
+}
+
+.login-footer p {
+  color: #7b8490;
+  font-size: 12px;
+  margin: 0 0 7px;
+}
+
+.login-footer small {
+  color: #9ca3af;
+  font-size: 11px;
+}
+
+/* LÍNEA AMARILLA */
+
+.bottom-line {
+  width: 100%;
+  height: 6px;
+  background-color: #f5bd45;
+  flex-shrink: 0;
+}
+
+/* TABLET */
+
+@media (max-width: 768px) {
+  .login-header {
+    padding: 12px 20px;
+  }
+
+  .login-main {
+    padding: 30px 16px;
+  }
+
+  .login-card {
+    max-width: 400px;
+  }
+}
+
+/* CELULAR */
+
+@media (max-width: 480px) {
+  .login-header {
+    padding: 10px 14px;
+  }
+
+  .institution-logo {
+    width: 40px;
+    height: 46px;
+  }
+
+  .institution-info h2 {
+    font-size: 13px;
+  }
+
+  .institution-info p {
+    font-size: 10px;
+  }
+
+  .home-link {
+    font-size: 12px;
+  }
+
+  .login-main {
+    padding: 25px 12px;
+  }
+
+  .login-card {
+    padding: 25px 20px;
+  }
+
+  .login-card h1 {
+    font-size: 23px;
+  }
+
+  .login-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .login-footer {
+    padding: 15px 10px 20px;
+  }
+}

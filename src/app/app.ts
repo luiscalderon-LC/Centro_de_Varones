@@ -1,13 +1,10 @@
 import { Component } from '@angular/core';
-import { Inicio } from './features/landing/pages/inicio/inicio';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [Inicio],
+  imports: [RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
-
-}
+export class App {}
