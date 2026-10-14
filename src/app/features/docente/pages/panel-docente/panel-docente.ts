@@ -1,15 +1,24 @@
 
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import {
   DatosAcademicosService
 } from '../../../../core/services/datos-academicos';
 
+import {
+  SesionService
+} from '../../../../core/services/sesion';
+
 interface CursoDocente {
   nombre: string;
   grado: string;
   estudiantes: number;
+}
+
+interface AsignacionDocente {
+  curso: string;
+  salon: string;
 }
 
 @Component({
@@ -21,43 +30,99 @@ interface CursoDocente {
 })
 export class PanelDocente {
 
-  docente = 'Luis Calderón';
-
+  docente = '';
   cursos: CursoDocente[] = [];
 
   constructor(
-    private datosService: DatosAcademicosService
+    private datosService: DatosAcademicosService,
+    private sesionService: SesionService,
+    private router: Router
   ) {
-    this.cargarCursos();
+    this.cargarDocente();
   }
 
-  cargarCursos(): void {
+  cargarDocente(): void {
 
-    // Cursos asignados al docente para la demostración.
-    // Todos pertenecen al salón 5.° A.
-    this.cursos = this.datosService.cursos.map(
-      nombre => ({
-        nombre,
-        grado: '5.° A',
+    const usuario = this.sesionService.obtenerUsuario();
+
+    if (!usuario || usuario.rol !== 'docente') {
+      this.router.navigate(['/login-docente']);
+      return;
+    }
+
+    this.docente = usuario.nombre;
+
+    const asignaciones: Record<string, AsignacionDocente[]> = {
+
+      'DOC-001': [
+        { curso: 'Matemáticas', salon: '5.° A' },
+        { curso: 'Matemáticas', salon: '5.° B' },
+        { curso: 'Matemáticas', salon: '4.° A' }
+      ],
+
+      'DOC-002': [
+        { curso: 'Comunicación', salon: '3.° A' },
+        { curso: 'Comunicación', salon: '3.° B' },
+        { curso: 'Comunicación', salon: '2.° A' }
+      ]
+
+    };
+
+    const cursosAsignados = asignaciones[usuario.codigo] ?? [];
+
+    this.cursos = cursosAsignados.map(asignacion => {
+
+      const [grado, seccion] = asignacion.salon.split(' ');
+
+      return {
+        nombre: asignacion.curso,
+        grado: asignacion.salon,
         estudiantes:
           this.datosService.contarEstudiantesPorSalon(
-            '5.°',
-            'A'
+            grado,
+            seccion
           )
-      })
-    );
+      };
+
+    });
   }
 
   get totalEstudiantes(): number {
-    return this.datosService.obtenerEstudiantes().length;
+
+    const ids = new Set<number>();
+
+    for (const curso of this.cursos) {
+
+      const [grado, seccion] = curso.grado.split(' ');
+
+      const estudiantes =
+        this.datosService.obtenerEstudiantesPorSalon(
+          grado,
+          seccion
+        );
+
+      estudiantes.forEach(estudiante => {
+        ids.add(estudiante.id);
+      });
+    }
+
+    return ids.size;
   }
 
   get totalSalones(): number {
-    return this.datosService.salones.length;
+
+    return new Set(
+      this.cursos.map(curso => curso.grado)
+    ).size;
   }
 
   get totalCursos(): number {
     return this.cursos.length;
+  }
+
+  cerrarSesion(): void {
+    this.sesionService.cerrarSesion();
+    this.router.navigate(['/login-docente']);
   }
 
 }

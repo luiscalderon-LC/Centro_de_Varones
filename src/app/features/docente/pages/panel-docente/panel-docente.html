@@ -68,14 +68,20 @@
       <div class="page-heading">
 
         <div>
-          <a routerLink="/login-docente" class="btn-back">
-            ← Volver al inicio de sesión
-          </a>
+          <button
+            type="button"
+            class="btn-back"
+            (click)="cerrarSesion()"
+          >
+            ← Cerrar sesión
+          </button>
 
           <h1>Panel del docente</h1>
 
           <p>
-            Bienvenido, Luis. Aquí puedes gestionar tus calificaciones.
+            Bienvenido, {{ docente }}.
+            Aquí puedes gestionar las calificaciones
+            de tus estudiantes.
           </p>
         </div>
 
@@ -104,7 +110,7 @@
           <div>
             <h2>{{ totalEstudiantes }}</h2>
             <p>Estudiantes</p>
-            <small>En los 15 salones registrados</small>
+            <small>En tus secciones asignadas</small>
           </div>
         </div>
 
@@ -112,9 +118,9 @@
           <span class="stat-icon">✓</span>
 
           <div>
-            <h2>08</h2>
-            <p>Evaluaciones</p>
-            <small>Dato de demostración</small>
+            <h2>{{ totalSalones }}</h2>
+            <p>Salones asignados</p>
+            <small>Grados y secciones</small>
           </div>
         </div>
 
@@ -137,7 +143,7 @@
 
         <p>
           Selecciona un curso para registrar o consultar notas.
-          Hay {{ totalSalones }} salones registrados en el sistema.
+          Tienes {{ totalSalones }} salones asignados.
         </p>
 
         <div class="table-wrapper">
@@ -155,7 +161,10 @@
 
             <tbody>
 
-              @for (curso of cursos; track curso.nombre) {
+              @for (
+                curso of cursos;
+                track curso.nombre + curso.grado
+              ) {
 
                 <tr>
                   <td>{{ curso.nombre }}</td>
@@ -175,6 +184,14 @@
                     >
                       Ver notas
                     </a>
+                  </td>
+                </tr>
+
+              } @empty {
+
+                <tr>
+                  <td colspan="4">
+                    No tienes cursos asignados.
                   </td>
                 </tr>
 
@@ -198,11 +215,12 @@
           <span class="activity-icon">✓</span>
 
           <div>
-            <strong>Sistema académico preparado</strong>
+            <strong>Asignaciones académicas disponibles</strong>
 
             <p>
-              {{ totalEstudiantes }} estudiantes distribuidos
-              en {{ totalSalones }} salones de secundaria.
+              Tienes {{ totalEstudiantes }} estudiantes
+              distribuidos en {{ totalSalones }}
+              salones asignados.
             </p>
           </div>
 
