@@ -1,0 +1,321 @@
+
+<div class="dashboard">
+
+  <header class="topbar">
+
+    <div class="school">
+      <img
+        src="/images/insignia-centro-varones.png"
+        alt="Insignia del colegio"
+        class="school-logo"
+      />
+
+      <div>
+        <strong>I.E. N.° 20874</strong>
+        <small>Centro de Varones - Cañete</small>
+      </div>
+    </div>
+
+    <div class="student-header">
+      <strong>{{ estudiante.nombre }}</strong>
+      <small>Estudiante | Centro de Varones</small>
+    </div>
+
+  </header>
+
+  <div class="dashboard-body">
+
+    <aside class="sidebar">
+
+      <p class="menu-title">MENÚ PRINCIPAL</p>
+
+      <nav>
+
+        <a routerLink="/panel-estudiante">
+          Panel principal
+        </a>
+
+        <a routerLink="/mis-calificaciones" class="active">
+          Mis calificaciones
+        </a>
+
+        <a routerLink="/mi-promedio">
+          Mi promedio
+        </a>
+
+        <a routerLink="/notas-necesarias">
+          Notas que necesito
+        </a>
+
+        <a routerLink="/historial">
+          Historial
+        </a>
+
+        <a routerLink="/login-estudiante">
+          Cerrar sesión
+        </a>
+
+      </nav>
+
+      <div class="sidebar-bottom">
+        <p>Proyecto académico</p>
+        <small>Centro de Varones N.° 20874</small>
+      </div>
+
+    </aside>
+
+    <main class="content">
+
+      <a routerLink="/panel-estudiante" class="btn-back">
+        ← Volver al panel
+      </a>
+
+      <div class="page-heading">
+        <h1>Mis calificaciones</h1>
+        <p>
+          Consulta las notas y el rendimiento de tus cursos.
+        </p>
+      </div>
+
+      <section class="filter-section">
+
+        <h2>Consultar calificaciones</h2>
+
+        <div class="filters">
+
+          <div class="field">
+            <label for="curso">Curso</label>
+
+            <select
+              id="curso"
+              [(ngModel)]="cursoSeleccionado"
+            >
+              @for (curso of cursos; track curso.nombre) {
+                <option [value]="curso.nombre">
+                  {{ curso.nombre }}
+                </option>
+              }
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="periodo">Periodo académico</label>
+
+            <select
+              id="periodo"
+              [(ngModel)]="periodoSeleccionado"
+              (ngModelChange)="cargarCalificaciones()"
+            >
+              <option value="I Bimestre">
+                I Bimestre
+              </option>
+
+              <option value="II Bimestre">
+                II Bimestre
+              </option>
+
+              <option value="III Bimestre">
+                III Bimestre
+              </option>
+
+              <option value="IV Bimestre">
+                IV Bimestre
+              </option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="grado">Grado y sección</label>
+
+            <input
+              id="grado"
+              [value]="estudiante.grado"
+              disabled
+            />
+          </div>
+
+          <div class="field">
+            <label for="anio">Año escolar</label>
+
+            <input
+              id="anio"
+              [value]="estudiante.anio"
+              disabled
+            />
+          </div>
+
+        </div>
+
+      </section>
+
+      <section class="grades-section">
+
+        <div class="section-heading">
+
+          <div>
+            <h2>{{ cursoSeleccionado }}</h2>
+            <p>Detalle de evaluaciones registradas</p>
+          </div>
+
+          <span class="period-badge">
+            {{ periodoSeleccionado }}
+          </span>
+
+        </div>
+
+        <div class="table-wrapper">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>EVALUACIÓN</th>
+                <th>CALIFICACIÓN</th>
+                <th>ESTADO</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              @if (cursoActual; as curso) {
+
+                <tr>
+                  <td>Evaluación 1</td>
+
+                  <td>
+                    {{ curso.evaluacion1 | number:'1.1-1' }}
+                  </td>
+
+                  <td>
+                    <span
+                      class="status"
+                      [class.approved]="curso.evaluacion1 >= 11"
+                      [class.failed]="curso.evaluacion1 < 11"
+                    >
+                      {{
+                        curso.evaluacion1 >= 11
+                          ? 'Aprobado'
+                          : 'Desaprobado'
+                      }}
+                    </span>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td>Evaluación 2</td>
+
+                  <td>
+                    {{ curso.evaluacion2 | number:'1.1-1' }}
+                  </td>
+
+                  <td>
+                    <span
+                      class="status"
+                      [class.approved]="curso.evaluacion2 >= 11"
+                      [class.failed]="curso.evaluacion2 < 11"
+                    >
+                      {{
+                        curso.evaluacion2 >= 11
+                          ? 'Aprobado'
+                          : 'Desaprobado'
+                      }}
+                    </span>
+                  </td>
+                </tr>
+
+              } @else {
+
+                <tr>
+                  <td
+                    colspan="3"
+                    style="text-align: center; padding: 20px;"
+                  >
+                    No hay calificaciones registradas.
+                  </td>
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+      <section class="summary-section">
+
+        <div class="summary-card">
+
+          <p>Promedio del curso</p>
+
+          <h2>
+            {{ promedio | number:'1.1-1' }}
+          </h2>
+
+          <small>Escala de 0 a 20</small>
+
+        </div>
+
+        <div class="summary-card">
+
+          <p>Estado académico</p>
+
+          <h2
+            [class.text-approved]="promedio >= 11"
+            [class.text-failed]="promedio < 11"
+          >
+            {{ estado }}
+          </h2>
+
+          <small>
+            Resultado del curso seleccionado
+          </small>
+
+        </div>
+
+      </section>
+
+      <section
+        class="grades-section"
+        aria-label="Mensaje académico"
+      >
+
+        <div class="section-heading">
+          <div>
+            <h2>Mi rendimiento en {{ cursoSeleccionado }}</h2>
+            <p>Orientación según tus calificaciones</p>
+          </div>
+
+          <span
+            class="status"
+            [class.approved]="promedio >= 11"
+            [class.failed]="promedio < 11"
+          >
+            {{ estado }}
+          </span>
+        </div>
+
+        <p>
+          {{ mensajeAcademico }}
+        </p>
+
+      </section>
+
+      <div class="actions">
+
+        <a
+          routerLink="/panel-estudiante"
+          class="btn-return"
+        >
+          Volver al panel
+        </a>
+
+      </div>
+
+    </main>
+
+  </div>
+
+</div>

@@ -1,0 +1,422 @@
+
+:host {
+  display: block;
+  min-height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #303642;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.dashboard {
+  min-height: 100vh;
+  background: #f3f4f6;
+}
+
+/* ENCABEZADO */
+
+.topbar {
+  min-height: 76px;
+  padding: 12px 35px;
+  background: #b91c1c;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.school {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.school-logo {
+  width: 43px;
+  height: 43px;
+  object-fit: contain;
+  background: white;
+  border-radius: 5px;
+  padding: 4px;
+}
+
+.school strong,
+.student-header strong {
+  display: block;
+  font-size: 15px;
+}
+
+.school small,
+.student-header small {
+  display: block;
+  font-size: 11px;
+  margin-top: 3px;
+  opacity: 0.9;
+}
+
+.student-header {
+  text-align: right;
+}
+
+/* ESTRUCTURA */
+
+.dashboard-body {
+  display: flex;
+  min-height: calc(100vh - 76px);
+}
+
+/* MENÚ LATERAL */
+
+.sidebar {
+  width: 235px;
+  flex-shrink: 0;
+  background: white;
+  border-right: 1px solid #e5e7eb;
+  padding: 25px 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-title {
+  color: #9ca3af;
+  font-size: 10px;
+  font-weight: bold;
+  margin: 0 12px 15px;
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.sidebar nav a {
+  display: block;
+  padding: 13px 15px;
+  border-radius: 7px;
+  color: #555;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.sidebar nav a:hover {
+  background: #f9eeee;
+  color: #b91c1c;
+}
+
+.sidebar nav a.active {
+  background: #fde8e8;
+  color: #b91c1c;
+  font-weight: bold;
+}
+
+.sidebar-bottom {
+  margin-top: auto;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 7px;
+  padding: 12px;
+}
+
+.sidebar-bottom p {
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.sidebar-bottom small {
+  font-size: 10px;
+  color: #9ca3af;
+}
+
+/* CONTENIDO */
+
+.content {
+  flex: 1;
+  min-width: 0;
+  padding: 32px;
+}
+
+.page-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 24px;
+}
+
+.page-heading h1 {
+  margin: 0 0 8px;
+  font-size: 27px;
+}
+
+.page-heading p {
+  margin: 0;
+  color: #8b919b;
+  font-size: 13px;
+}
+
+.school-year {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 10px 15px;
+  font-size: 12px;
+}
+
+/* INFORMACIÓN DEL ESTUDIANTE */
+
+.student-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 9px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #fee2e2;
+  color: #b91c1c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.student-info {
+  flex: 1;
+}
+
+.student-info h2 {
+  margin: 0 0 5px;
+  font-size: 17px;
+}
+
+.student-info p {
+  margin: 0 0 4px;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.student-info small {
+  color: #9ca3af;
+  font-size: 11px;
+}
+
+.period-badge {
+  padding: 9px 15px;
+  border-radius: 5px;
+  background: #fee2e2;
+  color: #b91c1c;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* TARJETAS ESTADÍSTICAS */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 9px;
+  padding: 20px;
+}
+
+.stat-card p {
+  margin: 0 0 10px;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.stat-card h2 {
+  margin: 0 0 7px;
+  color: #303642;
+  font-size: 27px;
+}
+
+.stat-card small {
+  color: #9ca3af;
+  font-size: 11px;
+}
+
+.stat-card .academic-status {
+  color: #15803d;
+  font-size: 23px;
+}
+
+.stat-card .academic-status.failed {
+  color: #b91c1c;
+}
+
+/* TABLA DE CURSOS */
+
+.section-heading h2 {
+  margin: 0 0 7px;
+  font-size: 19px;
+}
+
+.section-heading p {
+  margin: 0 0 15px;
+  color: #8b919b;
+  font-size: 12px;
+}
+
+.table-wrapper {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 9px;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  min-width: 550px;
+  border-collapse: collapse;
+}
+
+th {
+  background: #f9fafb;
+  color: #6b7280;
+  font-size: 10px;
+  text-align: left;
+  padding: 15px;
+}
+
+td {
+  padding: 15px;
+  border-top: 1px solid #f1f2f4;
+  font-size: 12px;
+}
+
+.status {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.approved {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.disapproved {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.btn-view {
+  display: inline-block;
+  background: #fee2e2;
+  color: #b91c1c;
+  padding: 8px 15px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.btn-view:hover {
+  background: #fecaca;
+}
+
+.page-footer {
+  margin-top: 30px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 11px;
+}
+
+/* TABLET */
+
+@media (max-width: 1050px) {
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* CELULAR */
+
+@media (max-width: 700px) {
+  .topbar {
+    padding: 12px 15px;
+  }
+
+  .school strong {
+    font-size: 12px;
+  }
+
+  .school small,
+  .student-header small {
+    font-size: 9px;
+  }
+
+  .dashboard-body {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    padding: 12px;
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .sidebar nav {
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .sidebar nav a {
+    white-space: nowrap;
+    font-size: 11px;
+  }
+
+  .menu-title,
+  .sidebar-bottom {
+    display: none;
+  }
+
+  .content {
+    padding: 18px;
+  }
+
+  .page-heading {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .page-heading h1 {
+    font-size: 22px;
+  }
+
+  .student-card {
+    flex-wrap: wrap;
+  }
+
+  .period-badge {
+    margin-left: 0;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+  }
+}

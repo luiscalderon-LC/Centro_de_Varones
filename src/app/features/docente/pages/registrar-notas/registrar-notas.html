@@ -59,7 +59,7 @@
       <div class="page-heading">
         <h1>Registro de calificaciones</h1>
         <p>
-          Selecciona el curso y registra las notas de los estudiantes.
+          Selecciona el curso y consulta las notas de los estudiantes.
         </p>
       </div>
 
@@ -83,20 +83,22 @@
             </select>
           </div>
 
-          <div class="field">
-            <label for="seccion">Grado y sección</label>
-            <select
-              id="seccion"
-              [(ngModel)]="seccionSeleccionada"
-              (ngModelChange)="cargarEstudiantes()"
-            >
-              @for (curso of cursos; track curso.nombre) {
-                <option [value]="curso.seccion">
-                  {{ curso.seccion }}
-                </option>
-              }
-            </select>
-          </div>
+         
+                <div class="field">
+                <label for="seccion">Grado y sección</label>
+
+                <select
+                    id="seccion"
+                    [(ngModel)]="seccionSeleccionada"
+                    (ngModelChange)="cargarEstudiantes()"
+                >
+                    @for (salon of salones; track salon) {
+                    <option [value]="salon">
+                        {{ salon }}
+                    </option>
+                    }
+                </select>
+                </div>
 
           <div class="field">
             <label for="periodo">Periodo</label>
@@ -112,17 +114,19 @@
             </select>
           </div>
 
-          <div class="field">
-            <label for="anio">Año escolar</label>
-            <select
-              id="anio"
-              [(ngModel)]="anioSeleccionado"
-              (ngModelChange)="cargarEstudiantes()"
-            >
-              <option>2026</option>
-              <option>2027</option>
-            </select>
-          </div>
+          
+                <div class="field">
+                <label for="anio">Año escolar</label>
+
+                <select
+                    id="anio"
+                    [(ngModel)]="anioSeleccionado"
+                    (ngModelChange)="cargarEstudiantes()"
+                >
+                    <option value="2026">2026</option>
+                </select>
+                </div>
+
 
         </div>
       </section>
@@ -133,18 +137,22 @@
           <div>
             <h2>Estudiantes matriculados</h2>
             <p>
-              Lista de demostración - Escala de 0 a 20
+              Calificaciones de ejemplo - Escala de 0 a 20
             </p>
           </div>
 
-          <button
-            type="button"
+          <a
             class="btn-edit"
-            (click)="editarNotas()"
-            [disabled]="editando"
+            routerLink="/editar-notas"
+            [queryParams]="{
+              curso: cursoSeleccionado,
+              seccion: seccionSeleccionada,
+              periodo: periodoSeleccionado,
+              anio: anioSeleccionado
+            }"
           >
             Editar calificaciones
-          </button>
+          </a>
         </div>
 
         <div class="table-wrapper">
@@ -164,6 +172,7 @@
               @for (estudiante of estudiantes; track estudiante.id) {
                 <tr>
                   <td>{{ estudiante.id }}</td>
+
                   <td class="student-name">
                     {{ estudiante.nombre }}
                   </td>
@@ -171,11 +180,8 @@
                   <td>
                     <input
                       type="number"
-                      min="0"
-                      max="20"
-                      step="0.1"
-                      [(ngModel)]="estudiante.evaluacion1"
-                      [disabled]="!editando"
+                      [value]="estudiante.evaluacion1"
+                      disabled
                       class="grade-input"
                     />
                   </td>
@@ -183,11 +189,8 @@
                   <td>
                     <input
                       type="number"
-                      min="0"
-                      max="20"
-                      step="0.1"
-                      [(ngModel)]="estudiante.evaluacion2"
-                      [disabled]="!editando"
+                      [value]="estudiante.evaluacion2"
+                      disabled
                       class="grade-input"
                     />
                   </td>
@@ -215,43 +218,28 @@
         </div>
 
         <div class="table-footer">
-          {{ estudiantes.length }} estudiantes en esta vista
+          {{ estudiantes.length }} estudiantes matriculados
         </div>
 
       </section>
-
-      @if (mensaje) {
-        <p
-          class="feedback"
-          [class.error]="mensaje.includes('deben')"
-          role="status"
-        >
-          {{ mensaje }}
-        </p>
-      }
 
       <div class="actions">
         <a routerLink="/panel-docente" class="btn-return">
           Volver al panel
         </a>
 
-        <button
-          type="button"
-          class="btn-cancel"
-          (click)="cancelar()"
-          [disabled]="!editando"
-        >
-          Cancelar
-        </button>
-
-        <button
-          type="button"
+        <a
+          routerLink="/editar-notas"
+          [queryParams]="{
+            curso: cursoSeleccionado,
+            seccion: seccionSeleccionada,
+            periodo: periodoSeleccionado,
+            anio: anioSeleccionado
+          }"
           class="btn-save"
-          (click)="guardarNotas()"
-          [disabled]="!editando"
         >
-          Guardar notas
-        </button>
+          Editar notas
+        </a>
       </div>
 
     </main>

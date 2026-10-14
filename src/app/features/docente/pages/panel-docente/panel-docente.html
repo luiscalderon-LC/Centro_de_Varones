@@ -1,14 +1,16 @@
+
 <div class="dashboard">
 
   <!-- ENCABEZADO -->
   <header class="topbar">
     <div class="school">
-     <img
-      src="/images/insignia-centro-varones.png"
-      alt="Insignia del Centro de Varones"
-       class="school-logo"
+      <img
+        src="/images/insignia-centro-varones.png"
+        alt="Insignia del Centro de Varones"
+        class="school-logo"
       />
-     <div class="school-info">
+
+      <div class="school-info">
         <strong>I.E. N.° 20874</strong>
         <small>Centro de Varones - Cañete</small>
       </div>
@@ -28,30 +30,30 @@
       <p class="menu-title">MENÚ PRINCIPAL</p>
 
       <nav>
-            <a routerLink="/panel-docente" class="active">
-                ▣ Panel principal
-            </a>
+        <a routerLink="/panel-docente" class="active">
+          ▣ Panel principal
+        </a>
 
-            <a routerLink="/registrar-notas">
-                ▤ Registrar notas
-            </a>
+        <a routerLink="/registrar-notas">
+          ▤ Registrar notas
+        </a>
 
-            <a href="#mis-cursos">
-                ▦ Mis cursos
-            </a>
+        <a href="#mis-cursos">
+          ▦ Mis cursos
+        </a>
 
-            <span class="menu-pending">
-                ▤ Estudiantes
-            </span>
+        <span class="menu-pending">
+          ▤ Estudiantes
+        </span>
 
-            <span class="menu-pending">
-                ▤ Reportes
-            </span>
+        <span class="menu-pending">
+          ▤ Reportes
+        </span>
 
-            <span class="menu-pending">
-                ⚙ Configuración
-            </span>
-             </nav>
+        <span class="menu-pending">
+          ⚙ Configuración
+        </span>
+      </nav>
 
       <div class="sidebar-bottom">
         <p>Proyecto académico</p>
@@ -63,33 +65,34 @@
     <!-- CONTENIDO PRINCIPAL -->
     <main class="content">
 
-    <div class="page-heading">
+      <div class="page-heading">
 
-  <div>
-    <a routerLink="/login-docente" class="btn-back">
-      ← Volver al inicio de sesión
-    </a>
+        <div>
+          <a routerLink="/login-docente" class="btn-back">
+            ← Volver al inicio de sesión
+          </a>
 
-    <h1>Panel del docente</h1>
+          <h1>Panel del docente</h1>
 
-    <p>
-      Bienvenido, Luis. Aquí puedes gestionar tus calificaciones.
-    </p>
-  </div>
+          <p>
+            Bienvenido, Luis. Aquí puedes gestionar tus calificaciones.
+          </p>
+        </div>
 
-  <a routerLink="/registrar-notas" class="btn-primary">
-    + Registrar notas
-  </a>
+        <a routerLink="/registrar-notas" class="btn-primary">
+          + Registrar notas
+        </a>
 
-</div>
+      </div>
 
       <!-- TARJETAS ESTADÍSTICAS -->
       <section class="stats">
 
         <div class="stat-card">
           <span class="stat-icon">✓</span>
+
           <div>
-            <h2>04</h2>
+            <h2>{{ totalCursos }}</h2>
             <p>Cursos asignados</p>
             <small>En este año escolar</small>
           </div>
@@ -97,28 +100,31 @@
 
         <div class="stat-card">
           <span class="stat-icon">✓</span>
+
           <div>
-            <h2>120</h2>
+            <h2>{{ totalEstudiantes }}</h2>
             <p>Estudiantes</p>
-            <small>En tus secciones</small>
+            <small>En los 15 salones registrados</small>
           </div>
         </div>
 
         <div class="stat-card">
           <span class="stat-icon">✓</span>
+
           <div>
             <h2>08</h2>
             <p>Evaluaciones</p>
-            <small>Registradas</small>
+            <small>Dato de demostración</small>
           </div>
         </div>
 
         <div class="stat-card">
           <span class="stat-icon">✓</span>
+
           <div>
             <h2>03</h2>
             <p>Pendientes</p>
-            <small>Por calificar</small>
+            <small>Dato de demostración</small>
           </div>
         </div>
 
@@ -128,10 +134,16 @@
       <section class="courses-section" id="mis-cursos">
 
         <h2>Mis cursos y secciones</h2>
-        <p>Selecciona un curso para registrar o consultar notas.</p>
+
+        <p>
+          Selecciona un curso para registrar o consultar notas.
+          Hay {{ totalSalones }} salones registrados en el sistema.
+        </p>
 
         <div class="table-wrapper">
+
           <table>
+
             <thead>
               <tr>
                 <th>CURSO</th>
@@ -142,46 +154,60 @@
             </thead>
 
             <tbody>
+
               @for (curso of cursos; track curso.nombre) {
+
                 <tr>
                   <td>{{ curso.nombre }}</td>
+
                   <td>{{ curso.grado }}</td>
+
                   <td>{{ curso.estudiantes }}</td>
+
                   <td>
-                   <a
-                     routerLink="/registrar-notas"
+                    <a
+                      routerLink="/registrar-notas"
                       [queryParams]="{
-                      curso: curso.nombre,
-                      seccion: curso.grado
-                    }"
-                     class="btn-view"
-                     >
-                       Ver notas
+                        curso: curso.nombre,
+                        seccion: curso.grado
+                      }"
+                      class="btn-view"
+                    >
+                      Ver notas
                     </a>
                   </td>
                 </tr>
+
               }
+
             </tbody>
+
           </table>
+
         </div>
 
       </section>
 
-      <!-- ACTIVIDAD -->
+      <!-- ACTIVIDAD RECIENTE -->
       <section class="activity-section">
+
         <h2>Actividad reciente</h2>
 
         <div class="activity-card">
+
           <span class="activity-icon">✓</span>
 
           <div>
-            <strong>Último registro de calificaciones</strong>
+            <strong>Sistema académico preparado</strong>
+
             <p>
-              Matemáticas - 3.° A - Evaluación 1
+              {{ totalEstudiantes }} estudiantes distribuidos
+              en {{ totalSalones }} salones de secundaria.
             </p>
           </div>
 
-          <small>10:30</small>
+          <small>Año 2026</small>
+
         </div>
 
       </section>

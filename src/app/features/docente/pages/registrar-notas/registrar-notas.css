@@ -433,3 +433,27 @@ button:disabled {
     flex-wrap: wrap;
   }
 }
+.btn-edit {
+  display: inline-block;
+  text-decoration: none;
+}
+/* Indicador de edición */
+.edit-indicator {
+  color: #b91c1c;
+  background: #fee2e2;
+  border-radius: 6px;
+  padding: 9px 14px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Campos editables */
+.grade-input:not(:disabled) {
+  background: white;
+  border-color: #f1b4b4;
+}
+
+.grade-input:focus {
+  outline: 2px solid #b91c1c;
+  outline-offset: 1px;
+}

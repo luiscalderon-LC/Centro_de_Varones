@@ -1,0 +1,240 @@
+
+<div class="dashboard">
+
+  <header class="topbar">
+
+    <div class="school">
+      <img
+        src="/images/insignia-centro-varones.png"
+        alt="Insignia del colegio"
+        class="school-logo"
+      />
+
+      <div>
+        <strong>I.E. N.° 20874</strong>
+        <small>Centro de Varones - Cañete</small>
+      </div>
+    </div>
+
+    <div class="student-header">
+      <strong>{{ estudiante.nombre }}</strong>
+      <small>Estudiante | Centro de Varones</small>
+    </div>
+
+  </header>
+
+  <div class="dashboard-body">
+
+    <aside class="sidebar">
+
+      <p class="menu-title">MENÚ PRINCIPAL</p>
+
+      <nav>
+
+        <a
+          routerLink="/panel-estudiante"
+          class="active"
+        >
+          ▣ Panel principal
+        </a>
+
+        <a routerLink="/mis-calificaciones">
+          ▤ Mis calificaciones
+        </a>
+
+        <a routerLink="/mi-promedio">
+          ▦ Mi promedio
+        </a>
+
+        <a routerLink="/notas-necesarias">
+          ▤ Notas que necesito
+        </a>
+
+        <a routerLink="/historial">
+          ▤ Historial
+        </a>
+
+        <a routerLink="/login-estudiante">
+          ↪ Cerrar sesión
+        </a>
+
+      </nav>
+
+      <div class="sidebar-bottom">
+        <p>Proyecto académico</p>
+        <small>Centro de Varones N.° 20874</small>
+      </div>
+
+    </aside>
+
+    <main class="content">
+
+      <div class="page-heading">
+
+        <div>
+          <h1>Panel del estudiante</h1>
+          <p>
+            Consulta tus cursos, notas y rendimiento académico.
+          </p>
+        </div>
+
+        <span class="school-year">
+          Año escolar: {{ estudiante.anio }}
+        </span>
+
+      </div>
+
+      <section class="student-card">
+
+        <div class="avatar">
+          {{ iniciales }}
+        </div>
+
+        <div class="student-info">
+          <h2>{{ estudiante.nombre }}</h2>
+
+          <p>
+            Estudiante - {{ estudiante.grado }}
+          </p>
+
+          <small>
+            Código: {{ estudiante.codigo }}
+          </small>
+        </div>
+
+        <span class="period-badge">
+          {{ estudiante.periodo }}
+        </span>
+
+      </section>
+
+      <section class="stats">
+
+        <div class="stat-card">
+          <p>Cursos matriculados</p>
+          <h2>{{ cursos.length }}</h2>
+          <small>Asignaturas registradas</small>
+        </div>
+
+        <div class="stat-card">
+          <p>Promedio general</p>
+          <h2>
+            {{ promedioGeneral | number:'1.1-1' }}
+          </h2>
+          <small>Escala de 0 a 20</small>
+        </div>
+
+        <div class="stat-card">
+          <p>Estado académico</p>
+
+          <h2
+            class="academic-status"
+            [class.failed]="estadoAcademico === 'Desaprobado'"
+          >
+            {{ estadoAcademico }}
+          </h2>
+
+          <small>
+            Según las calificaciones registradas
+          </small>
+        </div>
+
+      </section>
+
+      <section class="courses-section">
+
+        <div class="section-heading">
+          <h2>Mis cursos y calificaciones</h2>
+          <p>
+            Revisa el promedio de cada curso.
+          </p>
+        </div>
+
+        <div class="table-wrapper">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>CURSO</th>
+                <th>PROMEDIO</th>
+                <th>ESTADO</th>
+                <th>ACCIÓN</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              @for (curso of cursos; track curso.nombre) {
+
+                <tr>
+
+                  <td>
+                    {{ curso.nombre }}
+                  </td>
+
+                  <td>
+                    <strong>
+                      {{ curso.promedio | number:'1.1-1' }}
+                    </strong>
+                  </td>
+
+                  <td>
+                    <span
+                      class="status"
+                      [class.approved]="curso.promedio >= 11"
+                      [class.disapproved]="curso.promedio < 11"
+                    >
+                      {{
+                        curso.promedio >= 11
+                          ? 'Aprobado'
+                          : 'Desaprobado'
+                      }}
+                    </span>
+                  </td>
+
+                  <td>
+                    <a
+                      routerLink="/mis-calificaciones"
+                      [queryParams]="{
+                        curso: curso.nombre,
+                        periodo: estudiante.periodo
+                      }"
+                      class="btn-view"
+                    >
+                      Ver notas
+                    </a>
+                  </td>
+
+                </tr>
+
+              } @empty {
+
+                <tr>
+                  <td
+                    colspan="4"
+                    style="text-align: center; padding: 20px;"
+                  >
+                    No hay calificaciones registradas.
+                  </td>
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+      <footer class="page-footer">
+        Proyecto académico - I.E. Centro de Varones N.° 20874
+      </footer>
+
+    </main>
+
+  </div>
+
+</div>
