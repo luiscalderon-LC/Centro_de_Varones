@@ -1,4 +1,3 @@
-
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -20,7 +19,7 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <name>centro-varones-backend</name>
-    <description>Sistema de registro de notas del Centro de Varones de Cañete</description>
+    <description>Sistema de registro de notas del Centro de Varones de CaÃ±ete</description>
 
     <!-- JAVA -->
     <properties>
