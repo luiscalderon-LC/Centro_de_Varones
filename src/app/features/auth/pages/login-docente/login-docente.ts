@@ -2,6 +2,8 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { finalize } from 'rxjs';
+
 import { SesionService } from '../../../../core/services/sesion';
 
 @Component({
@@ -16,6 +18,7 @@ export class LoginDocente {
   correo = '';
   password = '';
   mensajeError = '';
+  cargando = false;
 
   constructor(
     private router: Router,
@@ -26,23 +29,47 @@ export class LoginDocente {
 
     this.mensajeError = '';
 
+    if (this.cargando) {
+      return;
+    }
+
     if (!this.correo.trim() || !this.password) {
       this.mensajeError =
-        'Completa tu correo o código y contraseña.';
+        'Completa tu correo y contraseña.';
       return;
     }
 
-    const correcto = this.sesionService.iniciarSesionDocente(
+    this.cargando = true;
+
+    this.sesionService.iniciarSesionDocente(
       this.correo,
       this.password
-    );
+    )
+    .pipe(
+      finalize(() => {
+        this.cargando = false;
+      })
+    )
+    .subscribe({
+      next: (correcto: boolean) => {
 
-    if (!correcto) {
-      this.mensajeError =
-        'El usuario o la contraseña son incorrectos.';
-      return;
-    }
+        if (!correcto) {
+          this.mensajeError =
+            'No se pudo iniciar sesión. Verifica tus credenciales o la conexión con el servidor.';
+          return;
+        }
 
-    this.router.navigate(['/panel-docente']);
+        // ELIMINAR CONTRASEÑA DEL FORMULARIO
+        this.password = '';
+
+        // INGRESAR AL PANEL DOCENTE
+        this.router.navigate(['/panel-docente']);
+      },
+
+      error: () => {
+        this.mensajeError =
+          'Ocurrió un error al conectar con el servidor.';
+      }
+    });
   }
 }
