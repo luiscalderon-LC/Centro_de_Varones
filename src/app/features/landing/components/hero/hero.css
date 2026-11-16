@@ -1,269 +1,128 @@
 
-/* PANTALLA PRINCIPAL - CENTRO DE VARONES */
-
 .hero {
-  background-color: #f3f4f6;
-  min-height: calc(100vh - 74px);
-  padding: 45px 20px 25px;
-  box-sizing: border-box;
+  background: #f9f6f4;
+  padding: 80px 25px;
   font-family: Arial, sans-serif;
 }
 
-.hero-container {
-  max-width: 1120px;
-  margin: 0 auto;
+.hero-contenedor {
+  max-width: 1150px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 60px;
 }
 
-/* RECUADRO PRINCIPAL */
-
-.hero-content {
-  background-color: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 18px;
-  padding: 25px 30px 20px;
-  text-align: center;
-}
-
-/* LÍNEA AMARILLA */
-
-.hero-line {
-  width: 100%;
-  height: 6px;
-  background-color: #f5bd45;
-  border-radius: 10px;
-  margin-bottom: 45px;
-}
-
-/* ENCABEZADO */
-
-.hero-tag {
-  display: block;
-  color: #b8202c;
+.anio {
+  display: inline-block;
+  color: #991b1b;
   font-size: 13px;
-  font-weight: 700;
-  margin-bottom: 15px;
+  font-weight: bold;
+  margin-bottom: 20px;
 }
 
-.hero h1 {
-  color: #303640;
-  font-size: 32px;
-  font-weight: 700;
-  line-height: 1.3;
-  margin: 0 0 12px;
-}
-
-.hero-description {
-  color: #7b8490;
-  font-size: 15px;
-  line-height: 1.6;
-  margin: 0 auto 18px;
-  max-width: 650px;
-}
-
-.selection-title {
-  color: #303640;
-  font-size: 16px;
-  font-weight: 700;
-  margin: 20px 0;
-}
-
-/* TARJETAS DE ACCESO */
-
-.access-cards {
-  display: flex;
-  justify-content: center;
-  align-items: stretch;
-  gap: 40px;
-  margin: 25px auto;
-}
-
-.access-card {
-  width: 310px;
-  min-height: 175px;
-  border-radius: 12px;
-  padding: 20px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-/* DOCENTE */
-
-.access-card.docente {
-  background-color: #fffafa;
-  border: 2px solid #f1c8cb;
-}
-
-.docente-icon {
-  background-color: #fde7e9;
-  color: #b8202c;
-}
-
-/* ESTUDIANTE */
-
-.access-card.estudiante {
-  background-color: #f8fafc;
-  border: 2px solid #cbdce9;
-}
-
-.estudiante-icon {
-  background-color: #e7f0f7;
-  color: #40789c;
-}
-
-/* ICONOS */
-
-.access-icon {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 22px;
-  margin-bottom: 10px;
-}
-
-/* TEXTOS DE TARJETAS */
-
-.access-card h2 {
-  color: #303640;
-  font-size: 19px;
-  margin: 0 0 7px;
-}
-
-.access-card p {
-  color: #89929e;
-  font-size: 12px;
+.hero-texto h1 {
+  color: #292524;
+  font-size: 42px;
+  line-height: 1.2;
   margin: 0 0 15px;
 }
 
-/* BOTONES */
+.hero-texto h1 span {
+  color: #991b1b;
+}
 
-.btn-docente,
-.btn-estudiante {
-  display: inline-block;
-  margin-top: auto;
-  padding: 11px 17px;
-  border-radius: 6px;
-  color: #ffffff;
+.hero-texto h2 {
+  color: #444;
+  font-size: 19px;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.hero-texto p {
+  color: #555;
+  font-size: 16px;
+  line-height: 1.8;
+  margin-bottom: 28px;
+}
+
+.botones {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.botones a {
   text-decoration: none;
-  font-size: 13px;
-  font-weight: 600;
-  transition: background-color 0.2s ease,
-              transform 0.2s ease;
+  padding: 13px 18px;
+  font-size: 14px;
+  border-radius: 5px;
 }
 
-.btn-docente {
-  background-color: #b8202c;
+.btn-conocer {
+  background: #991b1b;
+  color: white;
 }
 
-.btn-docente:hover {
-  background-color: #971923;
-  transform: translateY(-2px);
+.btn-conocer:hover {
+  background: #7f1d1d;
 }
 
-.btn-estudiante {
-  background-color: #40789c;
+.btn-ingresar {
+  border: 1px solid #991b1b;
+  color: #991b1b;
 }
 
-.btn-estudiante:hover {
-  background-color: #305e7d;
-  transform: translateY(-2px);
+.btn-ingresar:hover {
+  background: #f4e7e7;
 }
 
-/* NOTA INFERIOR */
-
-.access-note {
-  color: #9ca3af;
-  font-size: 11px;
-  margin: 20px 0 0;
+.hero-imagen {
+  width: 100%;
 }
 
-/* PIE DE PÁGINA */
-
-.hero-footer {
-  text-align: center;
-  padding: 35px 10px 5px;
+.hero-imagen img {
+  width: 100%;
+  height: 340px;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
 }
 
-.hero-footer p {
-  color: #7b8490;
-  font-size: 12px;
-  margin: 0 0 10px;
-}
-
-.hero-footer small {
-  color: #9ca3af;
-  font-size: 11px;
-}
-
-/* TABLET */
-
-@media (max-width: 768px) {
+@media (max-width: 850px) {
   .hero {
-    padding: 30px 16px;
+    padding: 55px 20px;
   }
 
-  .hero-content {
-    padding: 22px 18px;
+  .hero-contenedor {
+    grid-template-columns: 1fr;
+    gap: 30px;
   }
 
-  .hero h1 {
-    font-size: 26px;
+  .hero-texto h1 {
+    font-size: 34px;
   }
 
-  .access-cards {
-    gap: 18px;
-  }
-
-  .access-card {
-    width: 50%;
+  .hero-imagen img {
+    height: 280px;
   }
 }
-
-/* CELULAR */
 
 @media (max-width: 480px) {
-  .hero {
-    padding: 20px 12px;
+  .hero-texto h1 {
+    font-size: 29px;
   }
 
-  .hero-content {
-    padding: 18px 14px;
-    border-radius: 12px;
-  }
-
-  .hero-line {
-    margin-bottom: 30px;
-  }
-
-  .hero h1 {
-    font-size: 23px;
-  }
-
-  .hero-description {
-    font-size: 13px;
-  }
-
-  .selection-title {
-    font-size: 14px;
-  }
-
-  .access-cards {
+  .botones {
     flex-direction: column;
-    align-items: center;
-    gap: 16px;
   }
 
-  .access-card {
-    width: 100%;
-    max-width: 330px;
+  .botones a {
+    text-align: center;
   }
 
-  .hero-footer {
-    padding-top: 25px;
+  .hero-imagen img {
+    height: 220px;
   }
 }

@@ -1,20 +1,27 @@
 
 import { Component } from '@angular/core';
 
-// Componentes de la pantalla principal
-import { NavbarComponent } from '../../components/navbar/navbar';
-import { HeroComponent } from '../../components/hero/hero';
+import { Navbar } from '../../components/navbar/navbar';
+import { Hero } from '../../components/hero/hero';
+import { Nosotros } from '../../components/nosotros/nosotros';
+import { Caracteristicas } from '../../components/caracteristicas/caracteristicas';
+import { Beneficios } from '../../components/beneficios/beneficios';
+import { Contacto } from '../../components/contacto/contacto';
+import { Footer } from '../../components/footer/footer';
 
 @Component({
   selector: 'app-inicio',
   standalone: true,
   imports: [
-    NavbarComponent,
-    HeroComponent
+    Navbar,
+    Hero,
+    Nosotros,
+    Caracteristicas,
+    Beneficios,
+    Contacto,
+    Footer
   ],
   templateUrl: './inicio.html',
   styleUrl: './inicio.css'
 })
-export class Inicio {
-
-}
+export class Inicio {}

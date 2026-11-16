@@ -1,105 +1,47 @@
+
 <section class="contacto" id="contacto">
-  <div class="contacto-container">
+  <div class="contenedor">
 
-    <div class="contacto-info">
-      <span class="etiqueta">CONTACTO Y SOPORTE</span>
+    <div class="encabezado">
+      <h2>Contacto</h2>
 
-      <h2>¿Necesitas ayuda?</h2>
-
-      <p class="descripcion">
-        Estamos disponibles para atender consultas relacionadas con el
-        Sistema de Registro de Notas del Colegio Santa Rita de Cassia.
+      <p>
+        Si deseas conocer más sobre nuestra institución,
+        puedes acercarte al colegio para recibir información.
       </p>
-
-      <div class="info-item">
-        <div class="icono">🎓</div>
-        <div>
-          <h3>Comunidad educativa</h3>
-          <p>Atención para profesores, alumnos y apoderados.</p>
-        </div>
-      </div>
-
-      <div class="info-item">
-        <div class="icono">💬</div>
-        <div>
-          <h3>Soporte académico</h3>
-          <p>Envíanos tu consulta y nuestro equipo podrá orientarte.</p>
-        </div>
-      </div>
-
-      <div class="info-item">
-        <div class="icono">🔒</div>
-        <div>
-          <h3>Información segura</h3>
-          <p>Tus datos serán utilizados únicamente para atender tu consulta.</p>
-        </div>
-      </div>
     </div>
 
-    <div class="formulario-card">
+    <div class="informacion">
 
-      <h3>Envíanos una consulta</h3>
+      <div class="datos">
+        <h3>Información de la institución</h3>
 
-      <form (ngSubmit)="enviarFormulario()">
+        <p>
+          <strong>Nombre:</strong>
+          I.E. N.° 20874 Centro de Varones
+        </p>
 
-        <div class="campo">
-          <label for="nombre">Nombre completo</label>
-          <input
-            type="text"
-            id="nombre"
-            name="nombre"
-            [(ngModel)]="nombre"
-            placeholder="Ingrese su nombre completo"
-            required>
-        </div>
+        <p>
+          <strong>Ubicación:</strong>
+          Cañete, Lima, Perú
+        </p>
 
-        <div class="campo">
-          <label for="rol">Rol</label>
-          <select
-            id="rol"
-            name="rol"
-            [(ngModel)]="rol"
-            required>
-            <option value="" disabled>Seleccione su rol</option>
-            <option value="Profesor">Profesor</option>
-            <option value="Alumno">Alumno</option>
-            <option value="Apoderado">Apoderado</option>
-          </select>
-        </div>
+        <p>
+          <strong>Atención:</strong>
+          Consultas e información académica
+          directamente en la institución.
+        </p>
+      </div>
 
-        <div class="campo">
-          <label for="correo">Correo electrónico</label>
-          <input
-            type="email"
-            id="correo"
-            name="correo"
-            [(ngModel)]="correo"
-            placeholder="ejemplo@correo.com"
-            required>
-        </div>
+      <div class="mensaje">
+        <h3>Centro de Varones</h3>
 
-        <div class="campo">
-          <label for="mensaje">Mensaje</label>
-          <textarea
-            id="mensaje"
-            name="mensaje"
-            [(ngModel)]="mensaje"
-            rows="5"
-            placeholder="Escriba su consulta..."
-            required></textarea>
-        </div>
-
-        <button type="submit" class="btn-enviar">
-          Enviar consulta
-        </button>
-
-        @if (mensajeEnviado) {
-          <div class="mensaje-exito">
-            ✓ Tu consulta fue registrada correctamente.
-          </div>
-        }
-
-      </form>
+        <p>
+          Trabajamos para brindar una educación
+          que contribuya al aprendizaje y desarrollo
+          de nuestros estudiantes.
+        </p>
+      </div>
 
     </div>
 

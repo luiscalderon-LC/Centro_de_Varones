@@ -1,3 +1,4 @@
+
 import { Component } from '@angular/core';
 
 @Component({
@@ -7,4 +8,4 @@ import { Component } from '@angular/core';
   templateUrl: './nosotros.html',
   styleUrl: './nosotros.css'
 })
-export class NosotrosComponent {}
+export class Nosotros {}

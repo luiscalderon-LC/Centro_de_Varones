@@ -1,27 +1,43 @@
-<nav class="navbar">
-  <div class="nav-container">
 
-    <div class="brand">
+<header class="navbar">
+  <div class="contenedor">
+
+    <a routerLink="/" class="logo" (click)="cerrarMenu()">
       <img
         src="/images/insignia-centro-varones.png"
-        alt="Insignia del Centro de Varones N.° 20874"
-        class="brand-logo"
+        alt="Insignia del Centro de Varones"
       />
 
-      <div class="brand-text">
-        <span class="brand-name">Centro de Varones N.° 20874</span>
-        <span class="brand-subtitle">San Vicente de Cañete</span>
+      <div class="nombre-colegio">
+        <strong>I.E. N.° 20874</strong>
+        <span>Centro de Varones - Cañete</span>
       </div>
-    </div>
-
-    <ul class="nav-links">
-      <li><a routerLink="/">Inicio</a></li>
-      <li><a href="#nosotros">Nosotros</a></li>
-    </ul>
-
-    <a routerLink="/login" class="btn-primary">
-      Ingresar
     </a>
 
+    <button
+      type="button"
+      class="menu-toggle"
+      (click)="alternarMenu()"
+      [attr.aria-expanded]="menuAbierto"
+      aria-label="Abrir menú"
+    >
+      ☰
+    </button>
+
+    <nav class="menu" [class.abierto]="menuAbierto">
+      <a href="#inicio" (click)="cerrarMenu()">Inicio</a>
+      <a href="#nosotros" (click)="cerrarMenu()">Nosotros</a>
+      <a href="#propuesta" (click)="cerrarMenu()">Propuesta educativa</a>
+      <a href="#contacto" (click)="cerrarMenu()">Contacto</a>
+
+      <a
+        routerLink="/portal"
+        class="btn-portal"
+        (click)="cerrarMenu()"
+      >
+        Acceso a portales
+      </a>
+    </nav>
+
   </div>
-</nav>
+</header>

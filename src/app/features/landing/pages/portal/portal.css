@@ -1,0 +1,164 @@
+
+.portal {
+  min-height: 100vh;
+  background: #f9fafb;
+  padding: 35px 22px;
+  font-family: Arial, sans-serif;
+}
+
+.contenedor {
+  max-width: 1100px;
+  margin: auto;
+}
+
+/* BOTÓN VOLVER AL INICIO */
+.volver {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 18px;
+  background: #ffffff;
+  color: #991b1b;
+  border: 1px solid #991b1b;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 40px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.volver:hover {
+  background: #991b1b;
+  color: #ffffff;
+}
+
+/* ENCABEZADO */
+.encabezado {
+  text-align: center;
+  margin-bottom: 43px;
+}
+
+.insignia {
+  width: 70px;
+  height: 70px;
+  background: #991b1b;
+  color: white;
+  border-radius: 15px;
+  display: grid;
+  place-items: center;
+  font-size: 23px;
+  font-weight: 700;
+  margin: 0 auto 22px;
+}
+
+.encabezado h1 {
+  color: #1f2937;
+  font-size: clamp(27px, 4vw, 38px);
+  margin-bottom: 12px;
+}
+
+.encabezado p {
+  color: #991b1b;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.encabezado span {
+  color: #64748b;
+  font-size: 15px;
+}
+
+/* TARJETAS DE PERFILES */
+.perfiles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 23px;
+}
+
+.perfil {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 38px 25px;
+  text-align: center;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.perfil:hover {
+  border-color: #b91c1c;
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px #0000000d;
+}
+
+.icono {
+  font-size: 42px;
+  margin-bottom: 19px;
+}
+
+.perfil h2 {
+  color: #991b1b;
+  font-size: 23px;
+  margin-bottom: 13px;
+}
+
+.perfil p {
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.8;
+  min-height: 78px;
+}
+
+.perfil span {
+  display: inline-block;
+  margin-top: 20px;
+  color: #991b1b;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* PIE DE PÁGINA */
+.pie {
+  margin-top: 65px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+/* DISEÑO RESPONSIVE */
+@media (max-width: 850px) {
+  .perfiles {
+    grid-template-columns: 1fr;
+    max-width: 480px;
+    margin: auto;
+  }
+
+  .perfil p {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .portal {
+    padding: 22px 15px;
+  }
+
+  .volver {
+    margin-bottom: 30px;
+    font-size: 13px;
+  }
+
+  .encabezado h1 {
+    font-size: 26px;
+  }
+
+  .perfil {
+    padding: 28px 20px;
+  }
+
+  .pie {
+    margin-top: 40px;
+  }
+}

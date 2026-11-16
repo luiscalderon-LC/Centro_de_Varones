@@ -1,21 +1,16 @@
 
 import { Routes } from '@angular/router';
 
-// ======================================
-// INICIO
-// ======================================
+// LANDING PAGE
 import { Inicio } from './features/landing/pages/inicio/inicio';
+import { Portal } from './features/landing/pages/portal/portal';
 
-// ======================================
 // AUTENTICACIÓN
-// ======================================
 import { LoginDocente } from './features/auth/pages/login-docente/login-docente';
 import { LoginEstudiante } from './features/auth/pages/login-estudiante/login-estudiante';
 import { LoginDirector } from './features/auth/pages/login-director/login-director';
 
-// ======================================
 // DOCENTE
-// ======================================
 import { PanelDocente } from './features/docente/pages/panel-docente/panel-docente';
 import { RegistrarNotas } from './features/docente/pages/registrar-notas/registrar-notas';
 import { EditarNotas } from './features/docente/pages/editar-notas/editar-notas';
@@ -24,38 +19,40 @@ import { EstudiantesDocente } from './features/docente/pages/estudiantes-docente
 import { ReportesDocente } from './features/docente/pages/reportes-docente/reportes-docente';
 import { ConfiguracionDocente } from './features/docente/pages/configuracion-docente/configuracion-docente';
 
-// ======================================
 // ESTUDIANTE
-// ======================================
 import { PanelEstudiante } from './features/estudiante/pages/panel-estudiante/panel-estudiante';
 import { MisCalificaciones } from './features/estudiante/pages/mis-calificaciones/mis-calificaciones';
 
-// ======================================
 // DIRECTOR
-// ======================================
 import { PanelDirector } from './features/director/pages/panel-director/panel-director';
 import { RegistrarDocente } from './features/director/pages/registrar-docente/registrar-docente';
 import { GestionarDocentes } from './features/director/pages/gestionar-docentes/gestionar-docentes';
 import { MatricularEstudiante } from './features/director/pages/matricular-estudiante/matricular-estudiante';
 import { GestionarEstudiantes } from './features/director/pages/gestionar-estudiantes/gestionar-estudiantes';
 
-// ======================================
 // GUARD DEL DIRECTOR
-// ======================================
 import { directorGuard } from './guards/director.guard';
 
-// ======================================
-// CONFIGURACIÓN DE RUTAS
-// ======================================
 export const routes: Routes = [
 
-  // INICIO
+  // PRESENTACIÓN DEL COLEGIO
   {
     path: '',
-    component: Inicio
+    component: Inicio,
+    pathMatch: 'full'
+  },
+
+  // SELECCIÓN DE PERFILES
+  {
+    path: 'portal',
+    component: Portal
   },
 
   // AUTENTICACIÓN
+  {
+    path: 'login-director',
+    component: LoginDirector
+  },
   {
     path: 'login-docente',
     component: LoginDocente
@@ -64,14 +61,8 @@ export const routes: Routes = [
     path: 'login-estudiante',
     component: LoginEstudiante
   },
-  {
-    path: 'login-director',
-    component: LoginDirector
-  },
 
-  // ====================================
-  // DIRECTOR - RUTAS PROTEGIDAS
-  // ====================================
+  // DIRECTOR
   {
     path: 'panel-director',
     component: PanelDirector,
@@ -98,9 +89,7 @@ export const routes: Routes = [
     canActivate: [directorGuard]
   },
 
-  // ====================================
   // DOCENTE
-  // ====================================
   {
     path: 'panel-docente',
     component: PanelDocente
@@ -130,9 +119,7 @@ export const routes: Routes = [
     component: ConfiguracionDocente
   },
 
-  // ====================================
   // ESTUDIANTE
-  // ====================================
   {
     path: 'panel-estudiante',
     component: PanelEstudiante
@@ -142,9 +129,7 @@ export const routes: Routes = [
     component: MisCalificaciones
   },
 
-  // ====================================
-  // RUTA NO ENCONTRADA
-  // ====================================
+  // RUTA DESCONOCIDA
   {
     path: '**',
     redirectTo: ''
