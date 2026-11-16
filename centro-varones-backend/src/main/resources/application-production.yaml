@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: "jdbc:sqlserver://${DB_HOST:sqlserver}:${DB_PORT:1433};databaseName=${DB_NAME:CentroVaronesDB};encrypt=${DB_ENCRYPT:false};trustServerCertificate=${DB_TRUST_CERTIFICATE:true}"
+    username: ${DB_USERNAME:sa}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: ${SHOW_SQL:false}
+  sql:
+    init:
+      mode: never
+
+server:
+  port: ${SERVER_PORT:${PORT:8081}}

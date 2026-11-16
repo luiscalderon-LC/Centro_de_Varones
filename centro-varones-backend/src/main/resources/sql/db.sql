@@ -46,7 +46,7 @@ BEGIN
     CREATE TABLE administracion.AnioEscolar (
         id_anio INT NOT NULL PRIMARY KEY,
         anio INT NOT NULL,
-        estado NVARCHAR(20) NOT NULL DEFAULT 'Activo'
+        estado NVARCHAR(20) NOT NULL DEFAULT 'Activo',
 
         CONSTRAINT UQ_AnioEscolar_Anio
             UNIQUE (anio)
@@ -147,6 +147,66 @@ BEGIN
     );
 
     PRINT 'Tabla Docente creada';
+END;
+GO
+
+IF OBJECT_ID('usuarios.CuentaDirector', 'U') IS NULL
+BEGIN
+    CREATE TABLE usuarios.CuentaDirector (
+        id_director INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        nombres NVARCHAR(100) NOT NULL,
+        apellidos NVARCHAR(100) NOT NULL,
+        correo NVARCHAR(100) NOT NULL,
+        password_hash NVARCHAR(255) NOT NULL,
+        estado BIT NOT NULL
+            CONSTRAINT DF_CuentaDirector_Estado DEFAULT 1,
+        fecha_creacion DATETIME2 NOT NULL
+            CONSTRAINT DF_CuentaDirector_FechaCreacion DEFAULT SYSDATETIME(),
+
+        CONSTRAINT UQ_CuentaDirector_Correo
+            UNIQUE (correo)
+    );
+END;
+GO
+
+IF OBJECT_ID('usuarios.CuentaDocente', 'U') IS NULL
+BEGIN
+    CREATE TABLE usuarios.CuentaDocente (
+        id_cuenta INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        id_docente INT NOT NULL,
+        password_hash NVARCHAR(255) NOT NULL,
+        estado BIT NOT NULL
+            CONSTRAINT DF_CuentaDocente_Estado DEFAULT 1,
+        fecha_creacion DATETIME2 NOT NULL
+            CONSTRAINT DF_CuentaDocente_FechaCreacion DEFAULT SYSDATETIME(),
+
+        CONSTRAINT UQ_CuentaDocente_Docente
+            UNIQUE (id_docente),
+
+        CONSTRAINT FK_CuentaDocente_Docente
+            FOREIGN KEY (id_docente)
+            REFERENCES usuarios.Docente(id_docente)
+    );
+END;
+GO
+
+IF OBJECT_ID('usuarios.CuentaEstudiante', 'U') IS NULL
+BEGIN
+    CREATE TABLE usuarios.CuentaEstudiante (
+        id_cuenta INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        id_estudiante INT NOT NULL,
+        correo NVARCHAR(255) NOT NULL,
+        password_hash NVARCHAR(255) NOT NULL,
+        cambiar_password BIT NOT NULL
+            CONSTRAINT DF_CuentaEstudiante_CambiarPassword DEFAULT 0,
+        estado BIT NOT NULL
+            CONSTRAINT DF_CuentaEstudiante_Estado DEFAULT 1,
+        fecha_creacion DATETIME2 NOT NULL,
+
+        CONSTRAINT FK_CuentaEstudiante_Estudiante
+            FOREIGN KEY (id_estudiante)
+            REFERENCES usuarios.Estudiante(id_estudiante)
+    );
 END;
 GO
 

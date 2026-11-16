@@ -1,30 +1,22 @@
 
-# docker compose -f docker-compose-centrovarones/docker-composeBE.yml up -d
-# docker compose -f docker-compose-centrovarones/docker-composeBE.yml down
-
-version: '3'
-
 services:
   backend:
-    image: centro-varones-backend:latest
-    container_name: backend_centro_varones
+    image: markalcala/centro-varones-backend:2025
+    build:
+      context: ..
+      dockerfile: dockerfile-centrovarones/Dockerfile
+    container_name: proyecto-CV-backend
     ports:
-      - "${PORT:-8081}:${PORT:-8081}"
+      - "${PORT:-8081}:${SERVER_PORT:-8081}"
     environment:
-      - PORT=${PORT:-8081}
-      - SERVER_PORT=${PORT:-8081}
-      - SPRING_PROFILES_ACTIVE=production
-      - DB_HOST=${DB_HOST:-host.docker.internal}
-      - DB_PORT=${DB_PORT:-1435}
-      - DB_NAME=${DB_NAME:-CentroVaronesDB}
-      - DB_USERNAME=${DB_USERNAME:-sa}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_ENCRYPT=${DB_ENCRYPT:-false}
-      - DB_TRUST_CERTIFICATE=${DB_TRUST_CERTIFICATE:-true}
-      - SPRING_JPA_SHOW_SQL=false
-      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.SQLServerDialect
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
-      - SPRING_SQL_INIT_MODE=never
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    restart: always
+      SPRING_PROFILES_ACTIVE: production
+      SERVER_PORT: "${SERVER_PORT:-8081}"
+      DB_HOST: sqlserver
+      DB_PORT: "1433"
+      DB_NAME: "${DB_NAME:-CentroVaronesDB}"
+      DB_USERNAME: "${DB_USERNAME:-sa}"
+      DB_PASSWORD: "${DB_PASSWORD:?Define DB_PASSWORD en .env}"
+      DB_ENCRYPT: "${DB_ENCRYPT:-false}"
+      DB_TRUST_CERTIFICATE: "${DB_TRUST_CERTIFICATE:-true}"
+      SHOW_SQL: "${SHOW_SQL:-false}"
+    restart: unless-stopped

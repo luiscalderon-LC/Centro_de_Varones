@@ -1,0 +1,16 @@
+services:
+  sqlserver:
+    image: markalcala/centro-varones-sqlserver:2025
+    container_name: proyecto-CV-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Express"
+      MSSQL_SA_PASSWORD: "${DB_PASSWORD:?Define DB_PASSWORD en .env}"
+    ports:
+      - "${DB_PORT:-1433}:1433"
+    restart: unless-stopped
+    volumes:
+      - mssql-data:/var/opt/mssql
+
+volumes:
+  mssql-data:

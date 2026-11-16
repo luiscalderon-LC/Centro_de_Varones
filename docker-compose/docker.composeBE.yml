@@ -1,0 +1,21 @@
+services:
+  backend:
+    image: markalcala/centro-varones-backend:2025
+    build:
+      context: ../centro-varones-backend
+      dockerfile: ../dockerfile/dockerfile
+    container_name: proyecto-CV-backend
+    ports:
+      - "${PORT:-8081}:${SERVER_PORT:-8081}"
+    environment:
+      SPRING_PROFILES_ACTIVE: production
+      SERVER_PORT: "${SERVER_PORT:-8081}"
+      DB_HOST: sqlserver
+      DB_PORT: "1433"
+      DB_NAME: "${DB_NAME:-CentroVaronesDB}"
+      DB_USERNAME: "${DB_USERNAME:-sa}"
+      DB_PASSWORD: "${DB_PASSWORD:?Define DB_PASSWORD en .env}"
+      DB_ENCRYPT: "${DB_ENCRYPT:-false}"
+      DB_TRUST_CERTIFICATE: "${DB_TRUST_CERTIFICATE:-true}"
+      SHOW_SQL: "${SHOW_SQL:-false}"
+    restart: unless-stopped

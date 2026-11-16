@@ -4,8 +4,8 @@ spring:
     name: centro-varones-backend
 
   datasource:
-    url: "jdbc:sqlserver://localhost:1435;databaseName=CentroVaronesDB;encrypt=true;trustServerCertificate=true"
-    username: sa
+    url: "jdbc:sqlserver://${DB_HOST:localhost}:${DB_PORT:1435};databaseName=${DB_NAME:CentroVaronesDB};encrypt=${DB_ENCRYPT:true};trustServerCertificate=${DB_TRUST_CERTIFICATE:true}"
+    username: ${DB_USERNAME:sa}
     password: ${DB_PASSWORD}
 
   jpa:
@@ -13,13 +13,13 @@ spring:
       ddl-auto: validate
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-    show-sql: true
+    show-sql: ${SHOW_SQL:true}
     properties:
       hibernate:
         dialect: org.hibernate.dialect.SQLServerDialect
 
 server:
-  port: 8081
+  port: ${SERVER_PORT:${PORT:8081}}
   
 springdoc:
   swagger-ui:
