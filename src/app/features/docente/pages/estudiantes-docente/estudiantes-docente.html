@@ -1,0 +1,175 @@
+
+<div class="dashboard">
+
+  <header class="topbar">
+    <div class="school">
+      <img
+        src="/images/insignia-centro-varones.png"
+        alt="Insignia del Centro de Varones"
+        class="school-logo"
+      />
+
+      <div class="school-info">
+        <strong>I.E. N.° 20874</strong>
+        <small>Centro de Varones - Cañete</small>
+      </div>
+    </div>
+
+    <div class="teacher">
+      <strong>Docente</strong>
+      <small>Centro de Varones</small>
+    </div>
+  </header>
+
+  <div class="dashboard-body">
+
+    <aside class="sidebar">
+
+      <p class="menu-title">MENÚ PRINCIPAL</p>
+
+      <nav>
+        <a routerLink="/panel-docente">
+          ▣ Panel principal
+        </a>
+
+        <a routerLink="/registrar-notas">
+          ▤ Registrar notas
+        </a>
+
+        <a routerLink="/mis-cursos">
+          ▤ Mis cursos
+        </a>
+
+        <a
+          routerLink="/estudiantes-docente"
+          class="active"
+        >
+          ▤ Estudiantes
+        </a>
+
+        <a class="disabled">▤ Reportes</a>
+        <a class="disabled">⚙ Configuración</a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <strong>Proyecto académico</strong>
+        <small>Centro de Varones</small>
+      </div>
+
+    </aside>
+
+    <main class="content">
+
+      <a
+        routerLink="/panel-docente"
+        class="back-link"
+      >
+        ← Volver al panel docente
+      </a>
+
+      <div class="page-header">
+        <h1>Estudiantes</h1>
+        <p>
+          Consulta los estudiantes matriculados
+          en los salones que tienes asignados.
+        </p>
+      </div>
+
+      <section class="students-section">
+
+        <div class="section-header">
+          <div>
+            <h2>Lista de estudiantes</h2>
+            <p>Información del sistema académico</p>
+          </div>
+
+          <span class="total">
+            {{ estudiantesFiltrados.length }} estudiantes
+          </span>
+        </div>
+
+        <div class="filters">
+          <label for="salon">Grado y sección</label>
+
+          <select
+            id="salon"
+            [value]="salonSeleccionado"
+            (change)="cambiarSalon($any($event.target).value)"
+          >
+            <option value="Todos">
+              Todos los salones
+            </option>
+
+            @for (salon of salones; track salon) {
+              <option [value]="salon">
+                {{ salon }}
+              </option>
+            }
+          </select>
+        </div>
+
+        @if (cargando) {
+          <p class="message">
+            Cargando estudiantes...
+          </p>
+        }
+
+        @if (mensaje && !cargando) {
+          <p class="message">
+            {{ mensaje }}
+          </p>
+        }
+
+        @if (!cargando && estudiantesFiltrados.length > 0) {
+
+          <div class="table-wrapper">
+
+            <table>
+              <thead>
+                <tr>
+                  <th>N.°</th>
+                  <th>Estudiante</th>
+                  <th>Grado y sección</th>
+                  <th>Año escolar</th>
+                  <th>Cursos</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                @for (
+                  estudiante of estudiantesFiltrados;
+                  track estudiante.idMatricula
+                ) {
+                  <tr>
+                    <td>{{ $index + 1 }}</td>
+                    <td class="student-name">
+                      {{ estudiante.nombre }}
+                    </td>
+                    <td>{{ estudiante.salon }}</td>
+                    <td>{{ estudiante.anio }}</td>
+                    <td>
+                      {{ estudiante.cursos.join(', ') }}
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+
+          </div>
+        }
+
+        @if (!cargando &&
+             !mensaje &&
+             estudiantesFiltrados.length === 0) {
+          <p class="message">
+            No hay estudiantes para mostrar.
+          </p>
+        }
+
+      </section>
+
+    </main>
+
+  </div>
+
+</div>

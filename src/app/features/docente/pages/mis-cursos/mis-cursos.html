@@ -1,0 +1,176 @@
+
+<div class="dashboard">
+
+  <!-- ENCABEZADO -->
+  <header class="topbar">
+
+    <div class="school">
+
+      <img
+        src="/images/insignia-centro-varones.png"
+        alt="Insignia del Centro de Varones"
+        class="school-logo"
+      />
+
+      <div class="school-info">
+        <strong>I.E. N.° 20874</strong>
+        <small>Centro de Varones - Cañete</small>
+      </div>
+
+    </div>
+
+    <div class="teacher">
+      <strong>Docente</strong>
+      <small>Centro de Varones</small>
+    </div>
+
+  </header>
+
+  <div class="dashboard-body">
+
+    <!-- MENÚ LATERAL -->
+    <aside class="sidebar">
+
+      <p class="menu-title">MENÚ PRINCIPAL</p>
+
+      <nav>
+
+        <a routerLink="/panel-docente">
+          ▣ Panel principal
+        </a>
+
+        <a routerLink="/registrar-notas">
+          ▤ Registrar notas
+        </a>
+
+        <a routerLink="/mis-cursos" class="active">
+          ▤ Mis cursos
+        </a>
+
+        <a class="disabled">
+          ▤ Estudiantes
+        </a>
+
+        <a class="disabled">
+          ▤ Reportes
+        </a>
+
+        <a class="disabled">
+          ⚙ Configuración
+        </a>
+
+      </nav>
+
+      <div class="sidebar-bottom">
+        <strong>Proyecto académico</strong>
+        <small>Centro de Varones</small>
+      </div>
+
+    </aside>
+
+    <!-- CONTENIDO -->
+    <main class="content">
+
+      <a
+        routerLink="/panel-docente"
+        class="back-link"
+      >
+        ← Volver al panel docente
+      </a>
+
+      <div class="page-header">
+        <h1>Mis cursos</h1>
+        <p>
+          Consulta los cursos y salones que tienes
+          asignados durante el año escolar.
+        </p>
+      </div>
+
+      <section class="courses-section">
+
+        <div class="section-header">
+          <div>
+            <h2>Cursos asignados</h2>
+            <p>
+              Información obtenida del sistema académico
+            </p>
+          </div>
+
+          <span class="total">
+            {{ cursos.length }} cursos
+          </span>
+        </div>
+
+        @if (cargando) {
+          <p class="message">
+            Cargando cursos...
+          </p>
+        }
+
+        @if (mensaje && !cargando) {
+          <p class="message">
+            {{ mensaje }}
+          </p>
+        }
+
+        @if (!cargando && cursos.length > 0) {
+
+          <div class="courses-grid">
+
+            @for (curso of cursos; track curso.idAsignacion) {
+
+              <article class="course-card">
+
+                <div class="course-icon">
+                  📚
+                </div>
+
+                <h3>{{ curso.nombre }}</h3>
+
+                <p class="course-description">
+                  Curso asignado al docente
+                </p>
+
+                <div class="course-details">
+
+                  <div>
+                    <span>Grado y sección</span>
+                    <strong>{{ curso.salon }}</strong>
+                  </div>
+
+                  <div>
+                    <span>Año escolar</span>
+                    <strong>{{ curso.anio }}</strong>
+                  </div>
+
+                </div>
+
+                <a
+                  class="course-button"
+                  routerLink="/registrar-notas"
+                  [queryParams]="{
+                    curso: curso.nombre,
+                    seccion: curso.salon,
+                    periodo: 'I Bimestre',
+                    anio: curso.anio
+                  }"
+                >
+                  Ver calificaciones
+                  <span>→</span>
+                </a>
+
+              </article>
+
+            }
+
+          </div>
+
+        }
+
+      </section>
+
+    </main>
+
+  </div>
+
+</div>

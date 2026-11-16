@@ -1,0 +1,250 @@
+
+<div class="dashboard">
+
+  <header class="topbar">
+    <div class="school">
+      <img
+        src="/images/insignia-centro-varones.png"
+        alt="Insignia del Centro de Varones"
+        class="school-logo"
+      />
+
+      <div class="school-info">
+        <strong>I.E. N.° 20874</strong>
+        <small>Centro de Varones - Cañete</small>
+      </div>
+    </div>
+
+    <div class="teacher">
+      <strong>Docente</strong>
+      <small>Centro de Varones</small>
+    </div>
+  </header>
+
+  <div class="dashboard-body">
+
+    <aside class="sidebar">
+      <p class="menu-title">MENÚ PRINCIPAL</p>
+
+      <nav>
+        <a routerLink="/panel-docente">
+          ▣ Panel principal
+        </a>
+
+        <a routerLink="/registrar-notas">
+          ▤ Registrar notas
+        </a>
+
+        <a routerLink="/mis-cursos">
+          ▤ Mis cursos
+        </a>
+
+        <a routerLink="/estudiantes-docente">
+          ▤ Estudiantes
+        </a>
+
+        <a routerLink="/reportes-docente" class="active">
+          ▤ Reportes
+        </a>
+
+        <a class="disabled">
+          ⚙ Configuración
+        </a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <strong>Proyecto académico</strong>
+        <small>Centro de Varones</small>
+      </div>
+    </aside>
+
+    <main class="content">
+
+      <a routerLink="/panel-docente" class="back-link">
+        ← Volver al panel docente
+      </a>
+
+      <div class="page-header">
+        <h1>Reportes académicos</h1>
+        <p>
+          Consulta el rendimiento académico de
+          los estudiantes por curso y bimestre.
+        </p>
+      </div>
+
+      <section class="report-section">
+
+        <div class="section-header">
+          <div>
+            <h2>Filtros del reporte</h2>
+            <p>Selecciona los datos que deseas consultar.</p>
+          </div>
+        </div>
+
+        <div class="filters-grid">
+
+          <div class="filter">
+            <label for="curso">Curso</label>
+            <select
+              id="curso"
+              [(ngModel)]="cursoSeleccionado"
+              (ngModelChange)="actualizarSalones()"
+            >
+              @for (curso of cursos; track curso) {
+                <option [value]="curso">{{ curso }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="filter">
+            <label for="salon">Grado y sección</label>
+            <select
+              id="salon"
+              [(ngModel)]="salonSeleccionado"
+              (ngModelChange)="cargarReporte()"
+            >
+              @for (salon of salones; track salon) {
+                <option [value]="salon">{{ salon }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="filter">
+            <label for="periodo">Periodo</label>
+            <select
+              id="periodo"
+              [(ngModel)]="periodoSeleccionado"
+              (ngModelChange)="cargarReporte()"
+            >
+              @for (periodo of periodos; track periodo) {
+                <option [value]="periodo">{{ periodo }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="filter">
+            <label for="anio">Año escolar</label>
+            <select
+              id="anio"
+              [(ngModel)]="anioSeleccionado"
+              (ngModelChange)="actualizarCursos()"
+            >
+              @for (anio of anios; track anio) {
+                <option [value]="anio">{{ anio }}</option>
+              }
+            </select>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="summary-grid">
+
+        <div class="summary-card">
+          <span>Total estudiantes</span>
+          <strong>{{ totalEstudiantes }}</strong>
+        </div>
+
+        <div class="summary-card">
+          <span>Aprobados</span>
+          <strong>{{ aprobados }}</strong>
+        </div>
+
+        <div class="summary-card">
+          <span>En proceso</span>
+          <strong>{{ enProceso }}</strong>
+        </div>
+
+        <div class="summary-card">
+          <span>Desaprobados</span>
+          <strong>{{ desaprobados }}</strong>
+        </div>
+
+        <div class="summary-card">
+          <span>Promedio general</span>
+          <strong>
+            {{ promedioGeneral === null
+              ? '—'
+              : (promedioGeneral | number:'1.1-1') }}
+          </strong>
+        </div>
+
+      </section>
+
+      <section class="report-section">
+
+        <div class="section-header">
+          <div>
+            <h2>Resultados de estudiantes</h2>
+            <p>Calificaciones registradas - Escala de 0 a 20</p>
+          </div>
+        </div>
+
+        @if (cargando) {
+          <p class="message">Cargando reporte...</p>
+        }
+
+        @if (mensaje && !cargando) {
+          <p class="message">{{ mensaje }}</p>
+        }
+
+        @if (!cargando && estudiantes.length > 0) {
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>N.°</th>
+                  <th>Estudiante</th>
+                  <th>Evaluación 1</th>
+                  <th>Evaluación 2</th>
+                  <th>Promedio</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                @for (estudiante of estudiantes; track estudiante.id) {
+                  <tr>
+                    <td>{{ $index + 1 }}</td>
+                    <td class="student-name">
+                      {{ estudiante.nombre }}
+                    </td>
+                    <td>
+                      {{ estudiante.evaluacion1 === null
+                        ? '—'
+                        : (estudiante.evaluacion1 | number:'1.1-1') }}
+                    </td>
+                    <td>
+                      {{ estudiante.evaluacion2 === null
+                        ? '—'
+                        : (estudiante.evaluacion2 | number:'1.1-1') }}
+                    </td>
+                    <td>
+                      {{ estudiante.promedio === null
+                        ? '—'
+                        : (estudiante.promedio | number:'1.1-1') }}
+                    </td>
+                    <td>
+                      <span
+                        class="status"
+                        [class.aprobado]="estudiante.estado === 'Aprobado'"
+                        [class.proceso]="estudiante.estado === 'En proceso'"
+                        [class.desaprobado]="estudiante.estado === 'Desaprobado'"
+                      >
+                        {{ estudiante.estado }}
+                      </span>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+        }
+
+      </section>
+
+    </main>
+  </div>
+</div>

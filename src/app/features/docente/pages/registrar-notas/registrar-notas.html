@@ -137,7 +137,7 @@
           <div>
             <h2>Estudiantes matriculados</h2>
             <p>
-              Calificaciones de ejemplo - Escala de 0 a 20
+              Calificaciones registradas - Escala de 0 a 20
             </p>
           </div>
 
@@ -154,6 +154,14 @@
             Editar calificaciones
           </a>
         </div>
+
+          @if (cargando) {
+            <p>Consultando estudiantes y calificaciones...</p>
+          }
+
+          @if (mensaje) {
+            <p>{{ mensaje }}</p>
+          }
 
         <div class="table-wrapper">
           <table>
@@ -176,28 +184,33 @@
                   <td class="student-name">
                     {{ estudiante.nombre }}
                   </td>
+                  
+                    <td>
+                      <input
+                        type="number"
+                        [value]="estudiante.evaluacion1 ?? ''"
+                        disabled
+                        class="grade-input"
+                        placeholder="—"
+                      />
+                    </td>
 
-                  <td>
-                    <input
-                      type="number"
-                      [value]="estudiante.evaluacion1"
-                      disabled
-                      class="grade-input"
-                    />
-                  </td>
+                    <td>
+                      <input
+                        type="number"
+                        [value]="estudiante.evaluacion2 ?? ''"
+                        disabled
+                        class="grade-input"
+                        placeholder="—"
+                      />
+                    </td>
 
-                  <td>
-                    <input
-                      type="number"
-                      [value]="estudiante.evaluacion2"
-                      disabled
-                      class="grade-input"
-                    />
-                  </td>
 
                   <td>
                     <strong>
-                      {{ promedio(estudiante) | number:'1.1-1' }}
+                  {{ promedio(estudiante) === null
+                      ? '—'
+                      : (promedio(estudiante) | number:'1.1-1') }}
                     </strong>
                   </td>
 

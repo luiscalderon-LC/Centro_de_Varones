@@ -1,0 +1,195 @@
+
+<div class="dashboard">
+
+  <header class="topbar">
+
+    <div class="school">
+      <img
+        src="/images/insignia-centro-varones.png"
+        alt="Insignia del Centro de Varones"
+        class="school-logo"
+      />
+
+      <div class="school-info">
+        <strong>I.E. N.° 20874</strong>
+        <small>Centro de Varones - Cañete</small>
+      </div>
+    </div>
+
+    <div class="teacher">
+      <strong>{{ nombreDocente }}</strong>
+      <small>Docente | Centro de Varones</small>
+    </div>
+
+  </header>
+
+  <div class="dashboard-body">
+
+    <aside class="sidebar">
+
+      <p class="menu-title">MENÚ PRINCIPAL</p>
+
+      <nav>
+        <a routerLink="/panel-docente">
+          ▣ Panel principal
+        </a>
+
+        <a routerLink="/registrar-notas">
+          ▤ Registrar notas
+        </a>
+
+        <a routerLink="/mis-cursos">
+          ▤ Mis cursos
+        </a>
+
+        <a routerLink="/estudiantes-docente">
+          ▤ Estudiantes
+        </a>
+
+        <a routerLink="/reportes-docente">
+          ▤ Reportes
+        </a>
+
+        <a
+          routerLink="/configuracion-docente"
+          class="active"
+        >
+          ⚙ Configuración
+        </a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <strong>Proyecto académico</strong>
+        <small>Centro de Varones</small>
+      </div>
+
+    </aside>
+
+    <main class="content">
+
+      <a
+        routerLink="/panel-docente"
+        class="back-link"
+      >
+        ← Volver al panel docente
+      </a>
+
+      <div class="page-header">
+        <h1>Configuración</h1>
+        <p>
+          Consulta la información de tu cuenta
+          y los datos de la institución educativa.
+        </p>
+      </div>
+
+      @if (cargando) {
+        <p class="message">Cargando información...</p>
+      }
+
+      @if (mensaje) {
+        <p class="message">{{ mensaje }}</p>
+      }
+
+      <div class="settings-grid">
+
+        <!-- INFORMACIÓN DEL DOCENTE -->
+        <section class="settings-card">
+
+          <h2>Información del docente</h2>
+          <p class="description">
+            Datos del perfil académico.
+          </p>
+
+          <div class="profile">
+
+            <div class="avatar">
+              <span>D</span>
+            </div>
+
+            <div>
+              <strong>{{ nombreDocente }}</strong>
+              <small>{{ rol }}</small>
+            </div>
+
+          </div>
+
+          <div class="info-row">
+            <span>Rol</span>
+            <strong>{{ rol }}</strong>
+          </div>
+
+          <div class="info-row">
+            <span>Cursos asignados</span>
+            <strong>{{ totalCursos }}</strong>
+          </div>
+
+          <div class="info-row">
+            <span>Salones asignados</span>
+            <strong>{{ totalSalones }}</strong>
+          </div>
+
+        </section>
+
+        <!-- INFORMACIÓN INSTITUCIONAL -->
+        <section class="settings-card">
+
+          <h2>Información institucional</h2>
+          <p class="description">
+            Datos generales del centro educativo.
+          </p>
+
+          <div class="info-row">
+            <span>Institución</span>
+            <strong>{{ institucion }}</strong>
+          </div>
+
+          <div class="info-row">
+            <span>Nombre</span>
+            <strong>{{ nombreInstitucion }}</strong>
+          </div>
+
+          <div class="info-row">
+            <span>Ubicación</span>
+            <strong>{{ ubicacion }}</strong>
+          </div>
+
+          <div class="info-row">
+            <span>Año escolar</span>
+            <strong>{{ anioEscolar }}</strong>
+          </div>
+
+        </section>
+
+        <!-- CONFIGURACIÓN DE CUENTA -->
+        <section class="settings-card account-card">
+
+          <h2>Configuración de cuenta</h2>
+          <p class="description">
+            Información sobre el acceso al sistema.
+          </p>
+
+          <div class="info-row">
+            <span>Tipo de usuario</span>
+            <strong>Docente</strong>
+          </div>
+
+          <div class="info-row">
+            <span>Estado de la interfaz</span>
+            <span class="status">{{ estadoCuenta }}</span>
+          </div>
+
+          <div class="account-note">
+            La edición de datos personales y el cambio
+            de contraseña estarán disponibles cuando
+            se implemente la autenticación del sistema.
+          </div>
+
+        </section>
+
+      </div>
+
+    </main>
+
+  </div>
+
+</div>

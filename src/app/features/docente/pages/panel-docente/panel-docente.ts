@@ -1,5 +1,5 @@
 
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 
 import {
@@ -28,19 +28,44 @@ interface AsignacionDocente {
   templateUrl: './panel-docente.html',
   styleUrl: './panel-docente.css'
 })
-export class PanelDocente {
+export class PanelDocente implements OnInit {
 
   docente = '';
   cursos: CursoDocente[] = [];
+  cargando = true;
 
   constructor(
     private datosService: DatosAcademicosService,
     private sesionService: SesionService,
     private router: Router
-  ) {
-    this.cargarDocente();
+  ) {}
+
+  ngOnInit(): void {
+    this.verificarAcceso();
   }
 
+  // VERIFICAR SESIÓN REAL CON SPRING BOOT
+  verificarAcceso(): void {
+
+    this.sesionService.verificarSesion().subscribe({
+      next: (autenticado) => {
+
+        if (!autenticado) {
+          this.router.navigate(['/login-docente']);
+          return;
+        }
+
+        this.cargarDocente();
+        this.cargando = false;
+      },
+
+      error: () => {
+        this.router.navigate(['/login-docente']);
+      }
+    });
+  }
+
+  // CARGAR INFORMACIÓN DEL DOCENTE
   cargarDocente(): void {
 
     const usuario = this.sesionService.obtenerUsuario();
@@ -52,6 +77,8 @@ export class PanelDocente {
 
     this.docente = usuario.nombre;
 
+    // ASIGNACIONES TEMPORALES
+    // DESPUÉS SE CONSULTARÁN DESDE SQL SERVER
     const asignaciones: Record<string, AsignacionDocente[]> = {
 
       'DOC-001': [
@@ -65,10 +92,10 @@ export class PanelDocente {
         { curso: 'Comunicación', salon: '3.° B' },
         { curso: 'Comunicación', salon: '2.° A' }
       ]
-
     };
 
-    const cursosAsignados = asignaciones[usuario.codigo] ?? [];
+    const cursosAsignados =
+      asignaciones[usuario.codigo] ?? [];
 
     this.cursos = cursosAsignados.map(asignacion => {
 
@@ -83,10 +110,10 @@ export class PanelDocente {
             seccion
           )
       };
-
     });
   }
 
+  // CONTAR ESTUDIANTES SIN DUPLICAR
   get totalEstudiantes(): number {
 
     const ids = new Set<number>();
@@ -109,6 +136,7 @@ export class PanelDocente {
     return ids.size;
   }
 
+  // CONTAR SALONES
   get totalSalones(): number {
 
     return new Set(
@@ -116,13 +144,25 @@ export class PanelDocente {
     ).size;
   }
 
+  // CONTAR CURSOS
   get totalCursos(): number {
     return this.cursos.length;
   }
 
+  // CERRAR SESIÓN REAL
   cerrarSesion(): void {
-    this.sesionService.cerrarSesion();
-    this.router.navigate(['/login-docente']);
-  }
 
+    this.sesionService.cerrarSesion().subscribe({
+      next: () => {
+        this.router.navigate(['/login-docente']);
+      },
+
+      error: (error) => {
+        console.error(
+          'No se pudo cerrar la sesión:',
+          error
+        );
+      }
+    });
+  }
 }

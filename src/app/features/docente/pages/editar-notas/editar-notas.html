@@ -39,7 +39,10 @@
           ✎ Editar notas
         </a>
 
-        <a routerLink="/panel-docente" fragment="mis-cursos">
+        <a
+          routerLink="/panel-docente"
+          fragment="mis-cursos"
+        >
           ▦ Mis cursos
         </a>
 
@@ -75,6 +78,7 @@
         </p>
       </div>
 
+      <!-- FILTROS -->
       <section class="filter-section">
 
         <h2>DATOS GENERALES</h2>
@@ -88,6 +92,7 @@
               id="curso"
               [(ngModel)]="cursoSeleccionado"
               (ngModelChange)="cambiarCurso()"
+              [disabled]="cargando || guardando"
             >
               @for (curso of cursos; track curso.nombre) {
                 <option [value]="curso.nombre">
@@ -97,23 +102,22 @@
             </select>
           </div>
 
-         
-            <div class="field">
+          <div class="field">
             <label for="seccion">Grado y sección</label>
 
             <select
-                id="seccion"
-                [(ngModel)]="seccionSeleccionada"
-                (ngModelChange)="cargarEstudiantes()"
+              id="seccion"
+              [(ngModel)]="seccionSeleccionada"
+              (ngModelChange)="cargarEstudiantes()"
+              [disabled]="cargando || guardando"
             >
-                @for (salon of salones; track salon) {
+              @for (salon of salones; track salon) {
                 <option [value]="salon">
-                    {{ salon }}
+                  {{ salon }}
                 </option>
-                }
+              }
             </select>
-            </div>
-
+          </div>
 
           <div class="field">
             <label for="periodo">Periodo</label>
@@ -122,6 +126,7 @@
               id="periodo"
               [(ngModel)]="periodoSeleccionado"
               (ngModelChange)="cargarEstudiantes()"
+              [disabled]="cargando || guardando"
             >
               <option value="I Bimestre">
                 I Bimestre
@@ -158,6 +163,7 @@
         </div>
       </section>
 
+      <!-- CALIFICACIONES -->
       <section class="grades-section">
 
         <div class="section-heading">
@@ -172,6 +178,12 @@
             Modo edición
           </span>
         </div>
+
+        @if (cargando) {
+          <p role="status">
+            Cargando estudiantes y calificaciones...
+          </p>
+        }
 
         <div class="table-wrapper">
 
@@ -190,12 +202,16 @@
 
             <tbody>
 
-              @for (estudiante of estudiantes; track estudiante.id) {
+              @for (
+                estudiante of estudiantes;
+                track estudiante.idMatricula;
+                let i = $index
+              ) {
 
                 <tr>
 
                   <td>
-                    {{ estudiante.id }}
+                    {{ i + 1 }}
                   </td>
 
                   <td class="student-name">
@@ -209,7 +225,10 @@
                       max="20"
                       step="0.1"
                       class="grade-input"
+                      placeholder="Pendiente"
                       [(ngModel)]="estudiante.evaluacion1"
+                      [disabled]="cargando || guardando"
+                      [attr.aria-label]="'Evaluación 1 de ' + estudiante.nombre"
                     />
                   </td>
 
@@ -220,13 +239,23 @@
                       max="20"
                       step="0.1"
                       class="grade-input"
+                      placeholder="Pendiente"
                       [(ngModel)]="estudiante.evaluacion2"
+                      [disabled]="cargando || guardando"
+                      [attr.aria-label]="'Evaluación 2 de ' + estudiante.nombre"
                     />
                   </td>
 
                   <td>
                     <strong>
-                      {{ promedio(estudiante) | number:'1.1-1' }}
+                      @if (
+                        estudiante.evaluacion1 !== null ||
+                        estudiante.evaluacion2 !== null
+                      ) {
+                        {{ promedio(estudiante) | number:'1.1-1' }}
+                      } @else {
+                        —
+                      }
                     </strong>
                   </td>
 
@@ -245,11 +274,16 @@
 
               } @empty {
 
-                <tr>
-                  <td colspan="6" style="text-align: center; padding: 20px;">
-                    No hay estudiantes registrados para este curso.
-                  </td>
-                </tr>
+                @if (!cargando) {
+                  <tr>
+                    <td
+                      colspan="6"
+                      style="text-align: center; padding: 20px;"
+                    >
+                      No hay estudiantes matriculados para esta selección.
+                    </td>
+                  </tr>
+                }
 
               }
 
@@ -265,6 +299,7 @@
 
       </section>
 
+      <!-- MENSAJES -->
       @if (mensaje) {
 
         <p
@@ -277,12 +312,14 @@
 
       }
 
+      <!-- BOTONES -->
       <div class="actions">
 
         <button
           type="button"
           class="btn-cancel"
           (click)="cancelar()"
+          [disabled]="guardando"
         >
           Cancelar
         </button>
@@ -291,8 +328,13 @@
           type="button"
           class="btn-save"
           (click)="guardarCambios()"
+          [disabled]="cargando || guardando || estudiantes.length === 0"
         >
-          Guardar cambios
+          @if (guardando) {
+            Guardando...
+          } @else {
+            Guardar cambios
+          }
         </button>
 
       </div>
