@@ -19,39 +19,48 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <name>centro-varones-backend</name>
-    <description>Sistema de registro de notas del Centro de Varones de CaÃ±ete</description>
 
-    <!-- JAVA -->
+    <description>
+        Sistema de registro de notas del Centro de Varones de Cañete
+    </description>
+
+    <!-- VERSION DE JAVA -->
     <properties>
         <java.version>25</java.version>
     </properties>
 
-    <!-- DEPENDENCIAS -->
+    <!-- DEPENDENCIAS DEL PROYECTO -->
     <dependencies>
 
-        <!-- SPRING WEB: API REST -->
+        <!-- SPRING WEB MVC: CONTROLADORES Y API REST -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>
 
-        <!-- SPRING DATA JPA -->
+        <!-- SPRING DATA JPA: ENTIDADES Y REPOSITORIOS -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
-        <!-- SQL SERVER -->
+        <!-- SQL SERVER: CONEXION CON LA BASE DE DATOS -->
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
             <scope>runtime</scope>
         </dependency>
 
-        <!-- VALIDACIONES -->
+        <!-- VALIDACIONES DE DATOS -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- SPRING SECURITY: SEGURIDAD Y AUTENTICACION -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
         <!-- SWAGGER UI / OPENAPI -->
@@ -61,14 +70,14 @@
             <version>3.0.2</version>
         </dependency>
 
-        <!-- LOMBOK -->
+        <!-- LOMBOK: REDUCCION DE CODIGO REPETITIVO -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
 
-        <!-- PRUEBAS -->
+        <!-- PRUEBAS AUTOMATIZADAS -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -77,33 +86,38 @@
 
     </dependencies>
 
-    <!-- CONFIGURACION MAVEN -->
+    <!-- CONFIGURACION DE MAVEN -->
     <build>
+
         <plugins>
 
-            <!-- SPRING BOOT MAVEN -->
+            <!-- PLUGIN PARA EJECUTAR SPRING BOOT -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-            <!-- COMPILADOR JAVA Y LOMBOK -->
+            <!-- COMPILADOR JAVA Y PROCESAMIENTO DE LOMBOK -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
 
                 <configuration>
                     <annotationProcessorPaths>
+
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
                             <version>${lombok.version}</version>
                         </path>
+
                     </annotationProcessorPaths>
                 </configuration>
+
             </plugin>
 
         </plugins>
+
     </build>
 
 </project>
