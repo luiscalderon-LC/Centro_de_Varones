@@ -1,0 +1,423 @@
+
+<div class="contenedor">
+
+  <!-- VOLVER AL PANEL -->
+  <a
+    routerLink="/panel-director"
+    class="volver"
+  >
+    ← Volver al panel
+  </a>
+
+  <section class="gestion">
+
+    <!-- ENCABEZADO -->
+    <div class="encabezado">
+
+      <div>
+        <h1>Gestión de docentes</h1>
+
+        <p>
+          Consulta y administra los docentes
+          del Centro de Varones.
+        </p>
+      </div>
+
+      <a
+        routerLink="/registrar-docente"
+        class="boton-nuevo"
+      >
+        + Registrar docente
+      </a>
+
+    </div>
+
+    <!-- PESTAÑAS -->
+    <div class="pestanas">
+
+      <button
+        type="button"
+        [class.activa]="pestana === 'activos'"
+        (click)="cambiarPestana('activos')"
+      >
+        Docentes activos
+      </button>
+
+      <button
+        type="button"
+        [class.activa]="pestana === 'eliminados'"
+        (click)="cambiarPestana('eliminados')"
+      >
+        Docentes eliminados
+      </button>
+
+    </div>
+
+    <!-- BUSCADOR -->
+    <div class="herramientas">
+
+      <input
+        type="search"
+        name="busqueda"
+        [(ngModel)]="busqueda"
+        placeholder="Buscar por nombre, DNI, correo o especialidad"
+      />
+
+      <span class="contador">
+        {{ docentesFiltrados.length }} docentes
+      </span>
+
+    </div>
+
+    <!-- MENSAJES -->
+    @if (mensaje) {
+
+      <div
+        class="mensaje"
+        [class.error]="esError"
+        role="status"
+      >
+        {{ mensaje }}
+      </div>
+
+    }
+
+    <!-- CARGANDO DOCENTES -->
+    @if (cargando) {
+
+      <p class="vacio">
+        Cargando docentes...
+      </p>
+
+    } @else if (docentesFiltrados.length === 0) {
+
+      <p class="vacio">
+        No se encontraron docentes en esta sección.
+      </p>
+
+    } @else {
+
+      <!-- LISTA DE DOCENTES -->
+      <div class="lista-docentes">
+
+        @for (
+          docente of docentesFiltrados;
+          track docente.idDocente
+        ) {
+
+          <article class="tarjeta-docente">
+
+            <!-- INFORMACIÓN PRINCIPAL -->
+            <div class="tarjeta-superior">
+
+              <div>
+                <h3>
+                  {{ docente.nombres }}
+                  {{ docente.apellidos }}
+                </h3>
+
+                <p>
+                  {{ docente.especialidad }}
+                </p>
+              </div>
+
+              <span
+                class="estado"
+                [class.inactivo]="!docente.estado"
+              >
+                {{
+                  docente.estado
+                    ? 'Activo'
+                    : 'Inactivo'
+                }}
+              </span>
+
+            </div>
+
+            <!-- DATOS -->
+            <div class="datos-docente">
+
+              <p>
+                <strong>Documento:</strong>
+                {{ docente.numeroDocumento }}
+              </p>
+
+              <p>
+                <strong>Correo:</strong>
+                {{ docente.correo }}
+              </p>
+
+            </div>
+
+            <!-- BOTONES -->
+            <div class="acciones">
+
+              <button
+                type="button"
+                class="boton-secundario"
+                (click)="verDetalles(docente)"
+              >
+                Ver detalles
+              </button>
+
+              <!-- DOCENTES ACTIVOS -->
+              @if (pestana === 'activos') {
+
+                <button
+                  type="button"
+                  class="boton-secundario"
+                  (click)="editar(docente)"
+                >
+                  Editar
+                </button>
+
+                <button
+                  type="button"
+                  class="boton-peligro"
+                  [disabled]="procesando"
+                  (click)="cambiarEstado(docente)"
+                >
+                  Eliminar
+                </button>
+
+              } @else {
+
+                <!-- DOCENTES ELIMINADOS -->
+                <button
+                  type="button"
+                  class="boton-restaurar"
+                  [disabled]="procesando"
+                  (click)="cambiarEstado(docente)"
+                >
+                  Restaurar
+                </button>
+
+              }
+
+            </div>
+
+          </article>
+
+        }
+
+      </div>
+
+    }
+
+    <!-- VER DETALLES -->
+    @if (seleccionado) {
+
+      <section class="panel-detalle">
+
+        <div class="panel-titulo">
+
+          <h2>Información del docente</h2>
+
+          <button
+            type="button"
+            (click)="cancelar()"
+          >
+            Cerrar
+          </button>
+
+        </div>
+
+        <p>
+          <strong>ID:</strong>
+          {{ seleccionado.idDocente }}
+        </p>
+
+        <p>
+          <strong>Nombres:</strong>
+          {{ seleccionado.nombres }}
+        </p>
+
+        <p>
+          <strong>Apellidos:</strong>
+          {{ seleccionado.apellidos }}
+        </p>
+
+        <p>
+          <strong>Tipo de documento:</strong>
+          {{
+            seleccionado.idTipoDocumento === 1
+              ? 'DNI'
+              : 'Carné de Extranjería'
+          }}
+        </p>
+
+        <p>
+          <strong>Número de documento:</strong>
+          {{ seleccionado.numeroDocumento }}
+        </p>
+
+        <p>
+          <strong>Correo institucional:</strong>
+          {{ seleccionado.correo }}
+        </p>
+
+        <p>
+          <strong>Especialidad:</strong>
+          {{ seleccionado.especialidad }}
+        </p>
+
+        <p>
+          <strong>Estado:</strong>
+          {{
+            seleccionado.estado
+              ? 'Activo'
+              : 'Inactivo'
+          }}
+        </p>
+
+      </section>
+
+    }
+
+    <!-- EDITAR DOCENTE -->
+    @if (editando) {
+
+      <section class="panel-editar">
+
+        <h2>Editar docente</h2>
+
+        <form
+          (ngSubmit)="guardarCambios()"
+          novalidate
+        >
+
+          <!-- TIPO DE DOCUMENTO -->
+          <label for="editTipo">
+            Tipo de documento
+          </label>
+
+          <select
+            id="editTipo"
+            name="editTipo"
+            [(ngModel)]="editando.idTipoDocumento"
+            required
+          >
+            <option [ngValue]="1">
+              DNI
+            </option>
+
+            <option [ngValue]="2">
+              Carné de Extranjería
+            </option>
+          </select>
+
+          <!-- NÚMERO DE DOCUMENTO -->
+          <label for="editDocumento">
+            Número de documento
+          </label>
+
+          <input
+            id="editDocumento"
+            name="editDocumento"
+            [(ngModel)]="editando.numeroDocumento"
+            [maxlength]="editando.idTipoDocumento === 1 ? 8 : 9"
+            inputmode="numeric"
+            required
+          />
+
+          <!-- NOMBRES -->
+          <label for="editNombres">
+            Nombres
+          </label>
+
+          <input
+            id="editNombres"
+            name="editNombres"
+            [(ngModel)]="editando.nombres"
+            maxlength="60"
+            required
+          />
+
+          <!-- APELLIDOS -->
+          <label for="editApellidos">
+            Apellidos
+          </label>
+
+          <input
+            id="editApellidos"
+            name="editApellidos"
+            [(ngModel)]="editando.apellidos"
+            maxlength="60"
+            required
+          />
+
+          <!-- CORREO INSTITUCIONAL -->
+          <label for="editCorreo">
+            Correo institucional
+          </label>
+
+          <input
+            type="email"
+            id="editCorreo"
+            name="editCorreo"
+            [(ngModel)]="editando.correo"
+            placeholder="nombre@centrovarones.edu.pe"
+            maxlength="100"
+            required
+          />
+
+          <!-- ESPECIALIDAD -->
+          <label for="editEspecialidad">
+            Especialidad
+          </label>
+
+          <select
+            id="editEspecialidad"
+            name="editEspecialidad"
+            [(ngModel)]="editando.especialidad"
+            required
+          >
+
+            @for (
+              especialidad of especialidades;
+              track especialidad
+            ) {
+
+              <option [value]="especialidad">
+                {{ especialidad }}
+              </option>
+
+            }
+
+          </select>
+
+          <!-- BOTONES -->
+          <div class="acciones">
+
+            <button
+              type="submit"
+              class="boton-guardar"
+              [disabled]="procesando"
+            >
+              @if (procesando) {
+                Guardando...
+              } @else {
+                Guardar cambios
+              }
+            </button>
+
+            <button
+              type="button"
+              class="boton-secundario"
+              [disabled]="procesando"
+              (click)="cancelar()"
+            >
+              Cancelar
+            </button>
+
+          </div>
+
+        </form>
+
+      </section>
+
+    }
+
+  </section>
+
+</div>

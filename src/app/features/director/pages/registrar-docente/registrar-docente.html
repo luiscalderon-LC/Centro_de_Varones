@@ -1,0 +1,292 @@
+
+<div class="contenedor">
+
+  <a routerLink="/panel-director" class="volver">
+    ← Volver al panel
+  </a>
+
+  <div class="formulario">
+
+    <h1>Registrar docente</h1>
+
+    <p>
+      Registra los datos y configura su acceso al sistema.
+    </p>
+
+    <form
+      #formDocente="ngForm"
+      (ngSubmit)="registrar()"
+      novalidate
+    >
+
+      <h3 class="titulo-seccion">
+        Datos del docente
+      </h3>
+
+      <!-- TIPO DE DOCUMENTO -->
+      <label for="tipoDocumento">
+        Tipo de documento <span class="obligatorio">*</span>
+      </label>
+
+      <select
+        id="tipoDocumento"
+        name="tipoDocumento"
+        [(ngModel)]="docente.idTipoDocumento"
+        [disabled]="cargando"
+        [class.campo-invalido]="errores['idTipoDocumento']"
+        required
+      >
+        <option [ngValue]="1">DNI</option>
+        <option [ngValue]="2">Carné de Extranjería</option>
+      </select>
+
+      @if (errores['idTipoDocumento']) {
+        <small class="campo-error">
+          {{ errores['idTipoDocumento'] }}
+        </small>
+      }
+
+      <!-- NÚMERO DE DOCUMENTO -->
+      <label for="dni">
+        Número de documento <span class="obligatorio">*</span>
+      </label>
+
+      <input
+        type="text"
+        id="dni"
+        name="dni"
+        [(ngModel)]="docente.dni"
+        [maxlength]="docente.idTipoDocumento === 1 ? 8 : 9"
+        inputmode="numeric"
+        [placeholder]="docente.idTipoDocumento === 1
+          ? 'DNI de 8 números'
+          : 'Carné de 9 números'"
+        [class.campo-invalido]="errores['dni']"
+        [disabled]="cargando"
+        required
+      />
+
+      @if (errores['dni']) {
+        <small class="campo-error">
+          {{ errores['dni'] }}
+        </small>
+      }
+
+      <!-- NOMBRES -->
+      <label for="nombres">
+        Nombres <span class="obligatorio">*</span>
+      </label>
+
+      <input
+        type="text"
+        id="nombres"
+        name="nombres"
+        [(ngModel)]="docente.nombres"
+        placeholder="Nombres completos"
+        maxlength="60"
+        [class.campo-invalido]="errores['nombres']"
+        [disabled]="cargando"
+        required
+      />
+
+      @if (errores['nombres']) {
+        <small class="campo-error">
+          {{ errores['nombres'] }}
+        </small>
+      }
+
+      <!-- APELLIDOS -->
+      <label for="apellidos">
+        Apellidos <span class="obligatorio">*</span>
+      </label>
+
+      <input
+        type="text"
+        id="apellidos"
+        name="apellidos"
+        [(ngModel)]="docente.apellidos"
+        placeholder="Apellidos completos"
+        maxlength="60"
+        [class.campo-invalido]="errores['apellidos']"
+        [disabled]="cargando"
+        required
+      />
+
+      @if (errores['apellidos']) {
+        <small class="campo-error">
+          {{ errores['apellidos'] }}
+        </small>
+      }
+
+      <!-- CORREO INSTITUCIONAL -->
+      <label for="correo">
+        Correo institucional <span class="obligatorio">*</span>
+      </label>
+
+      <input
+        type="email"
+        id="correo"
+        name="correo"
+        [(ngModel)]="docente.correo"
+        placeholder="nombre@centrovarones.edu.pe"
+        maxlength="100"
+        autocomplete="off"
+        [class.campo-invalido]="errores['correo']"
+        [disabled]="cargando"
+        required
+      />
+
+      @if (errores['correo']) {
+        <small class="campo-error">
+          {{ errores['correo'] }}
+        </small>
+      } @else {
+        <small class="campo-ayuda">
+          Solo se permiten correos @centrovarones.edu.pe
+        </small>
+      }
+
+      <!-- ESPECIALIDAD -->
+      <label for="especialidad">
+        Especialidad <span class="obligatorio">*</span>
+      </label>
+
+      <select
+        id="especialidad"
+        name="especialidad"
+        [(ngModel)]="docente.especialidad"
+        [class.campo-invalido]="errores['especialidad']"
+        [disabled]="cargando"
+        required
+      >
+        <option value="">
+          Seleccionar especialidad
+        </option>
+
+        @for (
+          especialidad of especialidades;
+          track especialidad
+        ) {
+          <option [value]="especialidad">
+            {{ especialidad }}
+          </option>
+        }
+      </select>
+
+      @if (errores['especialidad']) {
+        <small class="campo-error">
+          {{ errores['especialidad'] }}
+        </small>
+      }
+
+      <!-- ESTADO -->
+      <label for="estado">
+        Estado <span class="obligatorio">*</span>
+      </label>
+
+      <select
+        id="estado"
+        name="estado"
+        [(ngModel)]="docente.estado"
+        [class.campo-invalido]="errores['estado']"
+        [disabled]="cargando"
+        required
+      >
+        <option value="activo">Activo</option>
+        <option value="inactivo">Inactivo</option>
+      </select>
+
+      @if (errores['estado']) {
+        <small class="campo-error">
+          {{ errores['estado'] }}
+        </small>
+      }
+
+      <!-- ACCESO DEL DOCENTE -->
+      <h3 class="titulo-seccion">
+        Acceso del docente
+      </h3>
+
+      <!-- CONTRASEÑA -->
+      <label for="contrasena">
+        Contraseña <span class="obligatorio">*</span>
+      </label>
+
+      <input
+        type="password"
+        id="contrasena"
+        name="contrasena"
+        [(ngModel)]="contrasena"
+        placeholder="Mínimo 8 caracteres"
+        autocomplete="new-password"
+        minlength="8"
+        [class.campo-invalido]="errores['contrasena']"
+        [disabled]="cargando"
+        required
+      />
+
+      @if (errores['contrasena']) {
+        <small class="campo-error">
+          {{ errores['contrasena'] }}
+        </small>
+      }
+
+      <!-- CONFIRMAR CONTRASEÑA -->
+      <label for="confirmarContrasena">
+        Confirmar contraseña <span class="obligatorio">*</span>
+      </label>
+
+      <input
+        type="password"
+        id="confirmarContrasena"
+        name="confirmarContrasena"
+        [(ngModel)]="confirmarContrasena"
+        placeholder="Repite la contraseña"
+        autocomplete="new-password"
+        minlength="8"
+        [class.campo-invalido]="errores['confirmarContrasena']"
+        [disabled]="cargando"
+        required
+      />
+
+      @if (errores['confirmarContrasena']) {
+        <small class="campo-error">
+          {{ errores['confirmarContrasena'] }}
+        </small>
+      }
+
+      <!-- INDICACIÓN -->
+      <p class="nota-obligatoria">
+        <span class="obligatorio">*</span>
+        Todos los campos son obligatorios.
+      </p>
+
+      <!-- MENSAJE DE RESULTADO -->
+      @if (mensaje) {
+        <div
+          class="mensaje"
+          [class.error]="esError"
+          role="status"
+          aria-live="polite"
+        >
+          {{ mensaje }}
+        </div>
+      }
+
+      <!-- BOTÓN DE REGISTRO -->
+      <button
+        type="submit"
+        [disabled]="cargando"
+      >
+        @if (cargando) {
+          Registrando...
+        } @else {
+          Registrar docente
+        }
+      </button>
+
+    </form>
+
+  </div>
+
+</div>

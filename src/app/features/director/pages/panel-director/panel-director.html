@@ -1,0 +1,206 @@
+
+<div class="contenedor">
+
+  <!-- ENCABEZADO -->
+  <header class="encabezado">
+
+    <div>
+      <h2>I.E. N.° 20874</h2>
+      <p>Centro de Varones - Cañete</p>
+    </div>
+
+    <!-- DIRECTOR Y CERRAR SESIÓN -->
+    <div class="acciones-encabezado">
+
+      <span class="etiqueta-director">
+        DIRECTOR
+      </span>
+
+      <button
+        type="button"
+        class="boton-cerrar-sesion"
+        (click)="cerrarSesion()"
+        [disabled]="cerrandoSesion"
+      >
+        @if (cerrandoSesion) {
+          Cerrando sesión...
+        } @else {
+          Cerrar sesión
+        }
+      </button>
+
+    </div>
+
+  </header>
+
+  <!-- ERROR AL CERRAR SESIÓN -->
+  @if (errorCerrarSesion) {
+    <div class="mensaje-error-sesion" role="alert">
+      {{ errorCerrarSesion }}
+    </div>
+  }
+
+  <!-- TÍTULO PRINCIPAL -->
+  <div class="titulo-panel">
+    <h1>Panel del director</h1>
+    <p>Seleccione la opción que desea administrar.</p>
+  </div>
+
+  <!-- OPCIONES PRINCIPALES -->
+  <div class="opciones">
+
+    <!-- GESTIÓN DE DOCENTES -->
+    <div class="tarjeta">
+
+      <h2>Docentes</h2>
+
+      <p>
+        Registrar, consultar y administrar
+        los docentes del colegio.
+      </p>
+
+      <div class="acciones-tarjeta">
+
+        <a
+          routerLink="/registrar-docente"
+          class="boton-principal"
+        >
+          Registrar docente
+        </a>
+
+        <a
+          routerLink="/gestionar-docentes"
+          class="boton-secundario"
+        >
+          Gestionar docentes
+        </a>
+
+      </div>
+
+    </div>
+
+    <!-- GESTIÓN DE ESTUDIANTES -->
+    <div class="tarjeta">
+
+      <h2>Estudiantes</h2>
+
+      <p>
+        Matricular estudiantes, consultar sus datos
+        y administrar grados y secciones.
+      </p>
+
+      <div class="acciones-tarjeta">
+
+        <a
+          routerLink="/matricular-estudiante"
+          class="boton-principal"
+        >
+          Matricular estudiante
+        </a>
+
+        <a
+          routerLink="/gestionar-estudiantes"
+          class="boton-secundario"
+        >
+          Gestionar estudiantes
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- TÍTULO DEL RESUMEN -->
+  <h2 class="titulo-resumen">
+    Resumen general
+  </h2>
+
+  <!-- RESÚMENES -->
+  <div class="resumen-grid">
+
+    <!-- RESUMEN DE DOCENTES -->
+    <section class="tarjeta-resumen">
+
+      <h3>Resumen de docentes</h3>
+
+      <p class="descripcion-resumen">
+        Información actual de los docentes registrados.
+      </p>
+
+      <div class="dato-resumen">
+        <span>Docentes activos</span>
+
+        <strong>
+          {{ docentesActivos === null ? '—' : docentesActivos }}
+        </strong>
+      </div>
+
+      <div class="dato-resumen">
+        <span>Docentes eliminados</span>
+
+        <strong>
+          {{ docentesEliminados === null ? '—' : docentesEliminados }}
+        </strong>
+      </div>
+
+      <div class="pie-resumen">
+
+        <a routerLink="/gestionar-docentes">
+          Ver todos los docentes
+        </a>
+
+      </div>
+
+    </section>
+
+    <!-- RESUMEN DE ESTUDIANTES -->
+    <section class="tarjeta-resumen">
+
+      <h3>Resumen de estudiantes</h3>
+
+      <p class="descripcion-resumen">
+        Información de matrícula y organización escolar.
+      </p>
+
+      <div class="dato-resumen">
+        <span>Estudiantes matriculados</span>
+
+        <strong>
+          {{
+            estudiantesMatriculados === null
+              ? '—'
+              : estudiantesMatriculados
+          }}
+        </strong>
+      </div>
+
+      <div class="dato-resumen">
+        <span>Grados disponibles</span>
+
+        <strong>
+          {{ gradosDisponibles }}
+        </strong>
+      </div>
+
+      <div class="dato-resumen">
+        <span>Secciones disponibles</span>
+
+        <strong>
+          {{ seccionesDisponibles }}
+        </strong>
+      </div>
+
+      <div class="pie-resumen">
+
+        <a routerLink="/gestionar-estudiantes">
+          Consultar estudiantes por sección
+        </a>
+
+      </div>
+
+    </section>
+
+  </div>
+
+</div>
