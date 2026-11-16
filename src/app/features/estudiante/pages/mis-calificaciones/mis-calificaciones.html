@@ -1,6 +1,7 @@
 
 <div class="dashboard">
 
+  <!-- ENCABEZADO -->
   <header class="topbar">
 
     <div class="school">
@@ -25,6 +26,7 @@
 
   <div class="dashboard-body">
 
+    <!-- MENÚ LATERAL -->
     <aside class="sidebar">
 
       <p class="menu-title">MENÚ PRINCIPAL</p>
@@ -35,7 +37,10 @@
           Panel principal
         </a>
 
-        <a routerLink="/mis-calificaciones" class="active">
+        <a
+          routerLink="/mis-calificaciones"
+          class="active"
+        >
           Mis calificaciones
         </a>
 
@@ -64,9 +69,13 @@
 
     </aside>
 
+    <!-- CONTENIDO PRINCIPAL -->
     <main class="content">
 
-      <a routerLink="/panel-estudiante" class="btn-back">
+      <a
+        routerLink="/panel-estudiante"
+        class="btn-back"
+      >
         ← Volver al panel
       </a>
 
@@ -77,29 +86,36 @@
         </p>
       </div>
 
+      <!-- FILTROS -->
       <section class="filter-section">
 
         <h2>Consultar calificaciones</h2>
 
         <div class="filters">
 
+          <!-- CURSO -->
           <div class="field">
+
             <label for="curso">Curso</label>
 
             <select
               id="curso"
               [(ngModel)]="cursoSeleccionado"
+              (ngModelChange)="cargarCalificaciones()"
             >
-              @for (curso of cursos; track curso.nombre) {
-                <option [value]="curso.nombre">
-                  {{ curso.nombre }}
-                </option>
-              }
+              <option value="Matemáticas">
+                Matemáticas
+              </option>
             </select>
+
           </div>
 
+          <!-- PERIODO -->
           <div class="field">
-            <label for="periodo">Periodo académico</label>
+
+            <label for="periodo">
+              Periodo académico
+            </label>
 
             <select
               id="periodo"
@@ -122,32 +138,44 @@
                 IV Bimestre
               </option>
             </select>
+
           </div>
 
+          <!-- GRADO Y SECCIÓN -->
           <div class="field">
-            <label for="grado">Grado y sección</label>
+
+            <label for="grado">
+              Grado y sección
+            </label>
 
             <input
               id="grado"
               [value]="estudiante.grado"
               disabled
             />
+
           </div>
 
+          <!-- AÑO ESCOLAR -->
           <div class="field">
-            <label for="anio">Año escolar</label>
+
+            <label for="anio">
+              Año escolar
+            </label>
 
             <input
               id="anio"
               [value]="estudiante.anio"
               disabled
             />
+
           </div>
 
         </div>
 
       </section>
 
+      <!-- CALIFICACIONES -->
       <section class="grades-section">
 
         <div class="section-heading">
@@ -163,6 +191,20 @@
 
         </div>
 
+        <!-- MENSAJES -->
+        @if (cargando) {
+          <p>
+            Consultando calificaciones...
+          </p>
+        }
+
+        @if (mensajeError) {
+          <p>
+            {{ mensajeError }}
+          </p>
+        }
+
+        <!-- TABLA -->
         <div class="table-wrapper">
 
           <table>
@@ -177,62 +219,96 @@
 
             <tbody>
 
-              @if (cursoActual; as curso) {
+              @if (!cargando && !mensajeError) {
 
-                <tr>
-                  <td>Evaluación 1</td>
+                @if (cursoActual; as curso) {
 
-                  <td>
-                    {{ curso.evaluacion1 | number:'1.1-1' }}
-                  </td>
+                  <!-- EVALUACIÓN 1 -->
+                  <tr>
 
-                  <td>
-                    <span
-                      class="status"
-                      [class.approved]="curso.evaluacion1 >= 11"
-                      [class.failed]="curso.evaluacion1 < 11"
-                    >
+                    <td>Evaluación 1</td>
+
+                    <td>
                       {{
-                        curso.evaluacion1 >= 11
-                          ? 'Aprobado'
-                          : 'Desaprobado'
+                        curso.evaluacion1 === null
+                          ? '—'
+                          : (curso.evaluacion1 | number:'1.1-1')
                       }}
-                    </span>
-                  </td>
-                </tr>
+                    </td>
 
-                <tr>
-                  <td>Evaluación 2</td>
+                    <td>
+                      <span
+                        class="status"
+                        [class.approved]="
+                          curso.evaluacion1 !== null &&
+                          curso.evaluacion1 >= 11
+                        "
+                        [class.failed]="
+                          curso.evaluacion1 !== null &&
+                          curso.evaluacion1 < 11
+                        "
+                      >
+                        {{
+                          curso.evaluacion1 === null
+                            ? 'Pendiente'
+                            : curso.evaluacion1 >= 11
+                              ? 'Aprobado'
+                              : 'Desaprobado'
+                        }}
+                      </span>
+                    </td>
 
-                  <td>
-                    {{ curso.evaluacion2 | number:'1.1-1' }}
-                  </td>
+                  </tr>
 
-                  <td>
-                    <span
-                      class="status"
-                      [class.approved]="curso.evaluacion2 >= 11"
-                      [class.failed]="curso.evaluacion2 < 11"
-                    >
+                  <!-- EVALUACIÓN 2 -->
+                  <tr>
+
+                    <td>Evaluación 2</td>
+
+                    <td>
                       {{
-                        curso.evaluacion2 >= 11
-                          ? 'Aprobado'
-                          : 'Desaprobado'
+                        curso.evaluacion2 === null
+                          ? '—'
+                          : (curso.evaluacion2 | number:'1.1-1')
                       }}
-                    </span>
-                  </td>
-                </tr>
+                    </td>
 
-              } @else {
+                    <td>
+                      <span
+                        class="status"
+                        [class.approved]="
+                          curso.evaluacion2 !== null &&
+                          curso.evaluacion2 >= 11
+                        "
+                        [class.failed]="
+                          curso.evaluacion2 !== null &&
+                          curso.evaluacion2 < 11
+                        "
+                      >
+                        {{
+                          curso.evaluacion2 === null
+                            ? 'Pendiente'
+                            : curso.evaluacion2 >= 11
+                              ? 'Aprobado'
+                              : 'Desaprobado'
+                        }}
+                      </span>
+                    </td>
 
-                <tr>
-                  <td
-                    colspan="3"
-                    style="text-align: center; padding: 20px;"
-                  >
-                    No hay calificaciones registradas.
-                  </td>
-                </tr>
+                  </tr>
+
+                } @else {
+
+                  <tr>
+                    <td
+                      colspan="3"
+                      style="text-align: center; padding: 20px;"
+                    >
+                      No hay calificaciones registradas.
+                    </td>
+                  </tr>
+
+                }
 
               }
 
@@ -244,57 +320,82 @@
 
       </section>
 
+      <!-- RESUMEN ACADÉMICO -->
       <section class="summary-section">
 
+        <!-- PROMEDIO -->
         <div class="summary-card">
 
           <p>Promedio del curso</p>
 
           <h2>
-            {{ promedio | number:'1.1-1' }}
+            {{
+              promedio === null
+                ? '—'
+                : (promedio | number:'1.1-1')
+            }}
           </h2>
 
-          <small>Escala de 0 a 20</small>
+          <small>
+            Promedio provisional - Escala de 0 a 20
+          </small>
 
         </div>
 
+        <!-- ESTADO -->
         <div class="summary-card">
 
           <p>Estado académico</p>
 
           <h2
-            [class.text-approved]="promedio >= 11"
-            [class.text-failed]="promedio < 11"
+            [class.text-approved]="
+              promedio !== null && promedio >= 11
+            "
+            [class.text-failed]="
+              promedio !== null && promedio < 11
+            "
           >
             {{ estado }}
           </h2>
 
           <small>
-            Resultado del curso seleccionado
+            Resultado provisional del curso seleccionado
           </small>
 
         </div>
 
       </section>
 
+      <!-- RENDIMIENTO -->
       <section
         class="grades-section"
         aria-label="Mensaje académico"
       >
 
         <div class="section-heading">
+
           <div>
-            <h2>Mi rendimiento en {{ cursoSeleccionado }}</h2>
-            <p>Orientación según tus calificaciones</p>
+            <h2>
+              Mi rendimiento en {{ cursoSeleccionado }}
+            </h2>
+
+            <p>
+              Orientación según tus calificaciones
+            </p>
           </div>
 
           <span
             class="status"
-            [class.approved]="promedio >= 11"
-            [class.failed]="promedio < 11"
+            [class.approved]="
+              promedio !== null && promedio >= 11
+            "
+            [class.failed]="
+              promedio !== null && promedio < 11
+            "
           >
             {{ estado }}
           </span>
+
         </div>
 
         <p>
@@ -303,6 +404,7 @@
 
       </section>
 
+      <!-- BOTÓN VOLVER -->
       <div class="actions">
 
         <a
