@@ -17,6 +17,11 @@ public interface CuentaEstudianteRepository
             String correo
     );
 
+    // BUSCAR CORREO SIN DISTINGUIR MAYÚSCULAS
+    Optional<CuentaEstudiante> findByCorreoIgnoreCase(
+            String correo
+    );
+
     // BUSCAR CUENTA POR ESTUDIANTE
     Optional<CuentaEstudiante> findByIdEstudiante(
             Integer idEstudiante

@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 
 import pe.edu.centrodevarones.app.dto.LoginDocenteRequest;
 import pe.edu.centrodevarones.app.dto.LoginDocenteResponse;
+import pe.edu.centrodevarones.app.dto.LoginEstudianteRequest;
+import pe.edu.centrodevarones.app.dto.LoginEstudianteResponse;
 import pe.edu.centrodevarones.app.service.AutenticacionService;
 
 import java.util.List;
@@ -44,7 +46,7 @@ public class AutenticacionController {
         return csrfToken;
     }
 
-    // INICIAR SESIÓN DEL DOCENTE
+    // LOGIN DEL DOCENTE
     @PostMapping("/docente/login")
     public ResponseEntity<LoginDocenteResponse> loginDocente(
             @Valid @RequestBody LoginDocenteRequest request,
@@ -61,45 +63,91 @@ public class AutenticacionController {
 
         LoginDocenteResponse docente = resultado.get();
 
+        guardarSesion(
+                docente.id(),
+                docente.correo(),
+                "DOCENTE",
+                httpRequest,
+                httpResponse
+        );
+
+        return ResponseEntity.ok(docente);
+    }
+
+    // LOGIN DEL ESTUDIANTE
+    @PostMapping("/estudiante/login")
+    public ResponseEntity<LoginEstudianteResponse> loginEstudiante(
+            @Valid @RequestBody LoginEstudianteRequest request,
+            HttpServletRequest httpRequest,
+            HttpServletResponse httpResponse
+    ) {
+
+        Optional<LoginEstudianteResponse> resultado =
+                autenticacionService.iniciarSesionEstudiante(request);
+
+        if (resultado.isEmpty()) {
+            return ResponseEntity.status(401).build();
+        }
+
+        LoginEstudianteResponse estudiante = resultado.get();
+
+        guardarSesion(
+                estudiante.id(),
+                estudiante.correo(),
+                "ESTUDIANTE",
+                httpRequest,
+                httpResponse
+        );
+
+        return ResponseEntity.ok(estudiante);
+    }
+
+    // CREAR SESIÓN AUTENTICADA
+    private void guardarSesion(
+            Integer id,
+            String correo,
+            String rol,
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) {
+
         Authentication authentication =
                 new UsernamePasswordAuthenticationToken(
-                        docente.correo(),
+                        correo,
                         null,
                         List.of(
                                 new SimpleGrantedAuthority(
-                                        "ROLE_DOCENTE"
+                                        "ROLE_" + rol
                                 )
                         )
                 );
 
-        // CREAR CONTEXTO DE SEGURIDAD
         SecurityContext context =
                 SecurityContextHolder.createEmptyContext();
 
         context.setAuthentication(authentication);
         SecurityContextHolder.setContext(context);
 
-        // CREAR O RENOVAR LA SESIÓN
-        HttpSession session = httpRequest.getSession(true);
+        HttpSession session = request.getSession(true);
 
         if (!session.isNew()) {
-            httpRequest.changeSessionId();
+            request.changeSessionId();
         }
 
-        // GUARDAR IDENTIFICADOR DEL DOCENTE
-        session.setAttribute(
-                "DOCENTE_ID",
-                docente.id()
-        );
+        session.removeAttribute("DOCENTE_ID");
+        session.removeAttribute("ESTUDIANTE_ID");
 
-        // GUARDAR AUTENTICACIÓN
+        if ("DOCENTE".equals(rol)) {
+            session.setAttribute("DOCENTE_ID", id);
+        } else {
+            session.setAttribute("ESTUDIANTE_ID", id);
+        }
+
         securityContextRepository.saveContext(
                 context,
-                httpRequest,
-                httpResponse
+                request,
+                response
         );
-
-        return ResponseEntity.ok(docente);
     }
 
     // CONSULTAR SESIÓN ACTUAL
@@ -111,7 +159,6 @@ public class AutenticacionController {
 
         if (authentication == null ||
                 !authentication.isAuthenticated()) {
-
             return ResponseEntity.status(401).build();
         }
 
@@ -121,21 +168,41 @@ public class AutenticacionController {
             return ResponseEntity.status(401).build();
         }
 
-        Integer idDocente = (Integer) session.getAttribute(
-                "DOCENTE_ID"
-        );
+        Integer idDocente =
+                (Integer) session.getAttribute("DOCENTE_ID");
 
-        if (idDocente == null) {
-            return ResponseEntity.status(401).build();
+        if (idDocente != null &&
+                authentication.getAuthorities().stream()
+                        .anyMatch(a -> a.getAuthority()
+                                .equals("ROLE_DOCENTE"))) {
+
+            return ResponseEntity.ok(
+                    new SesionUsuarioResponse(
+                            idDocente,
+                            authentication.getName(),
+                            "docente"
+                    )
+            );
         }
 
-        return ResponseEntity.ok(
-                new SesionDocenteResponse(
-                        idDocente,
-                        authentication.getName(),
-                        "docente"
-                )
-        );
+        Integer idEstudiante =
+                (Integer) session.getAttribute("ESTUDIANTE_ID");
+
+        if (idEstudiante != null &&
+                authentication.getAuthorities().stream()
+                        .anyMatch(a -> a.getAuthority()
+                                .equals("ROLE_ESTUDIANTE"))) {
+
+            return ResponseEntity.ok(
+                    new SesionUsuarioResponse(
+                            idEstudiante,
+                            authentication.getName(),
+                            "estudiante"
+                    )
+            );
+        }
+
+        return ResponseEntity.status(401).build();
     }
 
     // CERRAR SESIÓN
@@ -155,7 +222,7 @@ public class AutenticacionController {
         return ResponseEntity.noContent().build();
     }
 
-    public record SesionDocenteResponse(
+    public record SesionUsuarioResponse(
             Integer id,
             String correo,
             String rol

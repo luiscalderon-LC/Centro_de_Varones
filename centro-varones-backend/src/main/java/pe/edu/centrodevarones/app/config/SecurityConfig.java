@@ -81,7 +81,8 @@ public class SecurityConfig {
                 // LOS LOGIN NO REQUIEREN TOKEN CSRF
                 .ignoringRequestMatchers(
                     "/api/auth/docente/login",
-                    "/api/auth/director/login"
+                    "/api/auth/director/login",
+                    "/api/auth/estudiante/login"
                 )
             )
 
@@ -112,6 +113,7 @@ public class SecurityConfig {
                     "/api/auth/csrf",
                     "/api/auth/docente/login",
                     "/api/auth/director/login",
+                    "/api/auth/estudiante/login",
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
                     "/swagger-ui.html"
