@@ -1,11 +1,12 @@
 
 <div class="dashboard">
 
+  <!-- ENCABEZADO INSTITUCIONAL -->
   <header class="topbar">
     <div class="school">
       <img
         src="/images/insignia-centro-varones.png"
-        alt="Insignia del colegio"
+        alt="Insignia del Centro de Varones"
         class="school-logo"
       />
 
@@ -15,14 +16,16 @@
       </div>
     </div>
 
+    <!-- NOMBRE DEL DOCENTE QUE INICIÓ SESIÓN -->
     <div class="teacher">
-      <strong>Luis Calderón</strong>
+      <strong>{{ nombreDocente }}</strong>
       <small>Docente | Centro de Varones</small>
     </div>
   </header>
 
   <div class="dashboard-body">
 
+    <!-- MENÚ LATERAL -->
     <aside class="sidebar">
       <p class="menu-title">MENÚ PRINCIPAL</p>
 
@@ -50,6 +53,7 @@
       </div>
     </aside>
 
+    <!-- CONTENIDO PRINCIPAL -->
     <main class="content">
 
       <a routerLink="/panel-docente" class="btn-back">
@@ -63,18 +67,27 @@
         </p>
       </div>
 
+      <!-- FILTROS -->
       <section class="filter-section">
         <h2>DATOS GENERALES</h2>
 
         <div class="filters">
 
+          <!-- CURSOS DEL DOCENTE -->
           <div class="field">
             <label for="curso">Curso</label>
+
             <select
               id="curso"
+              name="curso"
               [(ngModel)]="cursoSeleccionado"
               (ngModelChange)="cambiarCurso()"
+              [disabled]="cargando || cursos.length === 0"
             >
+              <option value="" disabled>
+                Selecciona un curso
+              </option>
+
               @for (curso of cursos; track curso.nombre) {
                 <option [value]="curso.nombre">
                   {{ curso.nombre }}
@@ -83,62 +96,72 @@
             </select>
           </div>
 
-         
-                <div class="field">
-                <label for="seccion">Grado y sección</label>
-
-                <select
-                    id="seccion"
-                    [(ngModel)]="seccionSeleccionada"
-                    (ngModelChange)="cargarEstudiantes()"
-                >
-                    @for (salon of salones; track salon) {
-                    <option [value]="salon">
-                        {{ salon }}
-                    </option>
-                    }
-                </select>
-                </div>
-
+          <!-- SALONES ASIGNADOS -->
           <div class="field">
-            <label for="periodo">Periodo</label>
+            <label for="seccion">Grado y sección</label>
+
             <select
-              id="periodo"
-              [(ngModel)]="periodoSeleccionado"
+              id="seccion"
+              name="seccion"
+              [(ngModel)]="seccionSeleccionada"
               (ngModelChange)="cargarEstudiantes()"
+              [disabled]="cargando || salones.length === 0"
             >
-              <option>I Bimestre</option>
-              <option>II Bimestre</option>
-              <option>III Bimestre</option>
-              <option>IV Bimestre</option>
+              <option value="" disabled>
+                Selecciona un salón
+              </option>
+
+              @for (salon of salones; track salon) {
+                <option [value]="salon">
+                  {{ salon }}
+                </option>
+              }
             </select>
           </div>
 
-          
-                <div class="field">
-                <label for="anio">Año escolar</label>
+          <!-- PERIODO ACADÉMICO -->
+          <div class="field">
+            <label for="periodo">Periodo</label>
 
-                <select
-                    id="anio"
-                    [(ngModel)]="anioSeleccionado"
-                    (ngModelChange)="cargarEstudiantes()"
-                >
-                    <option value="2026">2026</option>
-                </select>
-                </div>
+            <select
+              id="periodo"
+              name="periodo"
+              [(ngModel)]="periodoSeleccionado"
+              (ngModelChange)="cargarEstudiantes()"
+              [disabled]="cargando"
+            >
+              <option value="I Bimestre">I Bimestre</option>
+              <option value="II Bimestre">II Bimestre</option>
+              <option value="III Bimestre">III Bimestre</option>
+              <option value="IV Bimestre">IV Bimestre</option>
+            </select>
+          </div>
 
+          <!-- AÑO ESCOLAR -->
+          <div class="field">
+            <label for="anio">Año escolar</label>
+
+            <select
+              id="anio"
+              name="anio"
+              [(ngModel)]="anioSeleccionado"
+              (ngModelChange)="cargarEstudiantes()"
+              [disabled]="cargando"
+            >
+              <option value="2026">2026</option>
+            </select>
+          </div>
 
         </div>
       </section>
 
+      <!-- ESTUDIANTES Y CALIFICACIONES -->
       <section class="grades-section">
 
         <div class="section-heading">
           <div>
             <h2>Estudiantes matriculados</h2>
-            <p>
-              Calificaciones registradas - Escala de 0 a 20
-            </p>
+            <p>Calificaciones registradas - Escala de 0 a 20</p>
           </div>
 
           <a
@@ -150,19 +173,47 @@
               periodo: periodoSeleccionado,
               anio: anioSeleccionado
             }"
+            [class.disabled]="
+              !cursoSeleccionado ||
+              !seccionSeleccionada ||
+              cargando
+            "
+            [attr.aria-disabled]="
+              !cursoSeleccionado ||
+              !seccionSeleccionada ||
+              cargando
+            "
+            [attr.tabindex]="
+              !cursoSeleccionado ||
+              !seccionSeleccionada ||
+              cargando ? -1 : null
+            "
+            (click)="
+              (!cursoSeleccionado ||
+               !seccionSeleccionada ||
+               cargando) &&
+              $event.preventDefault()
+            "
           >
             Editar calificaciones
           </a>
         </div>
 
-          @if (cargando) {
-            <p>Consultando estudiantes y calificaciones...</p>
-          }
+        <!-- ESTADO DE CARGA -->
+        @if (cargando) {
+          <p class="loading-message">
+            Consultando estudiantes y calificaciones...
+          </p>
+        }
 
-          @if (mensaje) {
-            <p>{{ mensaje }}</p>
-          }
+        <!-- MENSAJES DEL SISTEMA -->
+        @if (mensaje) {
+          <p class="info-message">
+            {{ mensaje }}
+          </p>
+        }
 
+        <!-- TABLA -->
         <div class="table-wrapper">
           <table>
             <thead>
@@ -177,67 +228,86 @@
             </thead>
 
             <tbody>
-              @for (estudiante of estudiantes; track estudiante.id) {
+              @for (
+                estudiante of estudiantes;
+                track estudiante.id;
+                let i = $index
+              ) {
                 <tr>
-                  <td>{{ estudiante.id }}</td>
+
+                  <td>{{ i + 1 }}</td>
 
                   <td class="student-name">
                     {{ estudiante.nombre }}
                   </td>
-                  
-                    <td>
-                      <input
-                        type="number"
-                        [value]="estudiante.evaluacion1 ?? ''"
-                        disabled
-                        class="grade-input"
-                        placeholder="—"
-                      />
-                    </td>
 
-                    <td>
-                      <input
-                        type="number"
-                        [value]="estudiante.evaluacion2 ?? ''"
-                        disabled
-                        class="grade-input"
-                        placeholder="—"
-                      />
-                    </td>
+                  <td>
+                    <input
+                      type="number"
+                      [value]="estudiante.evaluacion1 ?? ''"
+                      disabled
+                      class="grade-input"
+                      placeholder="—"
+                    />
+                  </td>
 
+                  <td>
+                    <input
+                      type="number"
+                      [value]="estudiante.evaluacion2 ?? ''"
+                      disabled
+                      class="grade-input"
+                      placeholder="—"
+                    />
+                  </td>
 
                   <td>
                     <strong>
-                  {{ promedio(estudiante) === null
-                      ? '—'
-                      : (promedio(estudiante) | number:'1.1-1') }}
+                      {{
+                        promedio(estudiante) === null
+                          ? '—'
+                          : (promedio(estudiante) | number:'1.1-1')
+                      }}
                     </strong>
                   </td>
 
                   <td>
                     <span
                       class="status"
-                      [class.approved]="estado(estudiante) === 'Aprobado'"
-                      [class.process]="estado(estudiante) === 'En proceso'"
-                      [class.failed]="estado(estudiante) === 'Desaprobado'"
+                      [class.approved]="
+                        estado(estudiante) === 'Aprobado'
+                      "
+                      [class.process]="
+                        estado(estudiante) === 'En proceso'
+                      "
+                      [class.failed]="
+                        estado(estudiante) === 'Desaprobado'
+                      "
                     >
                       {{ estado(estudiante) }}
                     </span>
                   </td>
+
                 </tr>
               }
             </tbody>
           </table>
         </div>
 
+        <!-- TOTAL DE ESTUDIANTES -->
         <div class="table-footer">
           {{ estudiantes.length }} estudiantes matriculados
         </div>
 
       </section>
 
+      <!-- BOTONES INFERIORES -->
       <div class="actions">
-        <a routerLink="/panel-docente" class="btn-return">
+
+        <a
+          routerLink="/panel-docente"
+          class="btn-return"
+        >
           Volver al panel
         </a>
 
@@ -250,9 +320,31 @@
             anio: anioSeleccionado
           }"
           class="btn-save"
+          [class.disabled]="
+            !cursoSeleccionado ||
+            !seccionSeleccionada ||
+            cargando
+          "
+          [attr.aria-disabled]="
+            !cursoSeleccionado ||
+            !seccionSeleccionada ||
+            cargando
+          "
+          [attr.tabindex]="
+            !cursoSeleccionado ||
+            !seccionSeleccionada ||
+            cargando ? -1 : null
+          "
+          (click)="
+            (!cursoSeleccionado ||
+             !seccionSeleccionada ||
+             cargando) &&
+            $event.preventDefault()
+          "
         >
           Editar notas
         </a>
+
       </div>
 
     </main>

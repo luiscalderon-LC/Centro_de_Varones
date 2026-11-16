@@ -1,0 +1,5 @@
+pe\edu\centrodevarones\app\controller\EstudianteController.class
+pe\edu\centrodevarones\app\repository\EstudianteRepository.class
+pe\edu\centrodevarones\app\service\EstudianteService.class
+pe\edu\centrodevarones\app\AppApplication.class
+pe\edu\centrodevarones\app\entity\Estudiante.class

@@ -7,7 +7,7 @@
     <div class="school">
       <img
         src="/images/insignia-centro-varones.png"
-        alt="Insignia del colegio"
+        alt="Insignia del Centro de Varones"
         class="school-logo"
       />
 
@@ -56,9 +56,18 @@
           Historial
         </a>
 
-        <a routerLink="/login-estudiante">
-          Cerrar sesión
-        </a>
+        <button
+          type="button"
+          class="logout-link"
+          (click)="cerrarSesion()"
+          [disabled]="cerrandoSesion"
+        >
+          {{
+            cerrandoSesion
+              ? 'Cerrando sesión...'
+              : 'Cerrar sesión'
+          }}
+        </button>
 
       </nav>
 
@@ -72,6 +81,7 @@
     <!-- CONTENIDO PRINCIPAL -->
     <main class="content">
 
+      <!-- BOTÓN VOLVER -->
       <a
         routerLink="/panel-estudiante"
         class="btn-back"
@@ -79,11 +89,16 @@
         ← Volver al panel
       </a>
 
+      <!-- TÍTULO -->
       <div class="page-heading">
+
         <h1>Mis calificaciones</h1>
+
         <p>
-          Consulta las notas y el rendimiento de tus cursos.
+          Consulta las notas y el rendimiento
+          académico de tus cursos.
         </p>
+
       </div>
 
       <!-- FILTROS -->
@@ -96,16 +111,36 @@
           <!-- CURSO -->
           <div class="field">
 
-            <label for="curso">Curso</label>
+            <label for="curso">
+              Curso
+            </label>
 
             <select
               id="curso"
               [(ngModel)]="cursoSeleccionado"
-              (ngModelChange)="cargarCalificaciones()"
+              (ngModelChange)="actualizarCursos()"
+              [disabled]="cargando || nombresCursos.length === 0"
             >
-              <option value="Matemáticas">
-                Matemáticas
-              </option>
+
+              @if (nombresCursos.length === 0) {
+
+                <option value="">
+                  Sin cursos disponibles
+                </option>
+
+              }
+
+              @for (
+                nombre of nombresCursos;
+                track nombre
+              ) {
+
+                <option [value]="nombre">
+                  {{ nombre }}
+                </option>
+
+              }
+
             </select>
 
           </div>
@@ -120,8 +155,10 @@
             <select
               id="periodo"
               [(ngModel)]="periodoSeleccionado"
-              (ngModelChange)="cargarCalificaciones()"
+              (ngModelChange)="actualizarCursos()"
+              [disabled]="cargando"
             >
+
               <option value="I Bimestre">
                 I Bimestre
               </option>
@@ -137,6 +174,7 @@
               <option value="IV Bimestre">
                 IV Bimestre
               </option>
+
             </select>
 
           </div>
@@ -150,6 +188,7 @@
 
             <input
               id="grado"
+              type="text"
               [value]="estudiante.grado"
               disabled
             />
@@ -165,6 +204,7 @@
 
             <input
               id="anio"
+              type="text"
               [value]="estudiante.anio"
               disabled
             />
@@ -181,8 +221,18 @@
         <div class="section-heading">
 
           <div>
-            <h2>{{ cursoSeleccionado }}</h2>
-            <p>Detalle de evaluaciones registradas</p>
+
+            <h2>
+              {{
+                cursoSeleccionado ||
+                'Sin cursos disponibles'
+              }}
+            </h2>
+
+            <p>
+              Detalle de evaluaciones registradas
+            </p>
+
           </div>
 
           <span class="period-badge">
@@ -191,30 +241,37 @@
 
         </div>
 
-        <!-- MENSAJES -->
+        <!-- ESTADO DE CARGA -->
         @if (cargando) {
+
           <p>
             Consultando calificaciones...
           </p>
+
         }
 
+        <!-- MENSAJE DE ERROR -->
         @if (mensajeError) {
-          <p>
+
+          <p role="alert">
             {{ mensajeError }}
           </p>
+
         }
 
-        <!-- TABLA -->
+        <!-- TABLA DE NOTAS -->
         <div class="table-wrapper">
 
           <table>
 
             <thead>
+
               <tr>
                 <th>EVALUACIÓN</th>
                 <th>CALIFICACIÓN</th>
                 <th>ESTADO</th>
               </tr>
+
             </thead>
 
             <tbody>
@@ -223,89 +280,90 @@
 
                 @if (cursoActual; as curso) {
 
-                  <!-- EVALUACIÓN 1 -->
-                  <tr>
+                  <!-- RECORRER EVALUACIONES -->
+                  @for (
+                    evaluacion of curso.evaluaciones;
+                    track $index
+                  ) {
 
-                    <td>Evaluación 1</td>
+                    <tr>
 
-                    <td>
-                      {{
-                        curso.evaluacion1 === null
-                          ? '—'
-                          : (curso.evaluacion1 | number:'1.1-1')
-                      }}
-                    </td>
+                      <!-- NOMBRE -->
+                      <td>
+                        {{ evaluacion.nombre }}
+                      </td>
 
-                    <td>
-                      <span
-                        class="status"
-                        [class.approved]="
-                          curso.evaluacion1 !== null &&
-                          curso.evaluacion1 >= 11
-                        "
-                        [class.failed]="
-                          curso.evaluacion1 !== null &&
-                          curso.evaluacion1 < 11
-                        "
-                      >
+                      <!-- NOTA -->
+                      <td>
+
                         {{
-                          curso.evaluacion1 === null
-                            ? 'Pendiente'
-                            : curso.evaluacion1 >= 11
-                              ? 'Aprobado'
-                              : 'Desaprobado'
+                          evaluacion.calificacion === null
+                            ? '—'
+                            : (
+                                evaluacion.calificacion
+                                | number:'1.1-1'
+                              )
                         }}
-                      </span>
-                    </td>
 
-                  </tr>
+                      </td>
 
-                  <!-- EVALUACIÓN 2 -->
-                  <tr>
+                      <!-- ESTADO -->
+                      <td>
 
-                    <td>Evaluación 2</td>
+                        <span
+                          class="status"
+                          [class.approved]="
+                            evaluacion.calificacion !== null &&
+                            evaluacion.calificacion >= 11
+                          "
+                          [class.failed]="
+                            evaluacion.calificacion !== null &&
+                            evaluacion.calificacion < 11
+                          "
+                        >
 
-                    <td>
-                      {{
-                        curso.evaluacion2 === null
-                          ? '—'
-                          : (curso.evaluacion2 | number:'1.1-1')
-                      }}
-                    </td>
+                          {{
+                            evaluacion.calificacion === null
+                              ? 'Pendiente'
+                              : evaluacion.calificacion >= 11
+                                ? 'Aprobado'
+                                : 'Desaprobado'
+                          }}
 
-                    <td>
-                      <span
-                        class="status"
-                        [class.approved]="
-                          curso.evaluacion2 !== null &&
-                          curso.evaluacion2 >= 11
-                        "
-                        [class.failed]="
-                          curso.evaluacion2 !== null &&
-                          curso.evaluacion2 < 11
-                        "
+                        </span>
+
+                      </td>
+
+                    </tr>
+
+                  } @empty {
+
+                    <tr>
+
+                      <td
+                        colspan="3"
+                        style="text-align: center; padding: 20px;"
                       >
-                        {{
-                          curso.evaluacion2 === null
-                            ? 'Pendiente'
-                            : curso.evaluacion2 >= 11
-                              ? 'Aprobado'
-                              : 'Desaprobado'
-                        }}
-                      </span>
-                    </td>
+                        No hay evaluaciones registradas
+                        para este curso.
+                      </td>
 
-                  </tr>
+                    </tr>
+
+                  }
 
                 } @else {
 
                   <tr>
+
                     <td
                       colspan="3"
                       style="text-align: center; padding: 20px;"
                     >
-                      No hay calificaciones registradas.
+                      No hay calificaciones registradas
+                      para el curso y bimestre seleccionados.
                     </td>
+
                   </tr>
 
                 }
@@ -326,14 +384,18 @@
         <!-- PROMEDIO -->
         <div class="summary-card">
 
-          <p>Promedio del curso</p>
+          <p>
+            Promedio del curso
+          </p>
 
           <h2>
+
             {{
-              promedio === null
+              cargando || mensajeError || promedio === null
                 ? '—'
                 : (promedio | number:'1.1-1')
             }}
+
           </h2>
 
           <small>
@@ -342,20 +404,36 @@
 
         </div>
 
-        <!-- ESTADO -->
+        <!-- ESTADO ACADÉMICO -->
         <div class="summary-card">
 
-          <p>Estado académico</p>
+          <p>
+            Estado académico
+          </p>
 
           <h2
             [class.text-approved]="
-              promedio !== null && promedio >= 11
+              !cargando &&
+              !mensajeError &&
+              promedio !== null &&
+              promedio >= 11
             "
             [class.text-failed]="
-              promedio !== null && promedio < 11
+              !cargando &&
+              !mensajeError &&
+              promedio !== null &&
+              promedio < 11
             "
           >
-            {{ estado }}
+
+            {{
+              cargando
+                ? 'Consultando...'
+                : mensajeError
+                  ? 'No disponible'
+                  : estado
+            }}
+
           </h2>
 
           <small>
@@ -366,7 +444,7 @@
 
       </section>
 
-      <!-- RENDIMIENTO -->
+      <!-- RENDIMIENTO ACADÉMICO -->
       <section
         class="grades-section"
         aria-label="Mensaje académico"
@@ -375,36 +453,64 @@
         <div class="section-heading">
 
           <div>
+
             <h2>
-              Mi rendimiento en {{ cursoSeleccionado }}
+              Mi rendimiento en
+              {{
+                cursoSeleccionado ||
+                'mis cursos'
+              }}
             </h2>
 
             <p>
               Orientación según tus calificaciones
             </p>
+
           </div>
 
           <span
             class="status"
             [class.approved]="
-              promedio !== null && promedio >= 11
+              !cargando &&
+              !mensajeError &&
+              promedio !== null &&
+              promedio >= 11
             "
             [class.failed]="
-              promedio !== null && promedio < 11
+              !cargando &&
+              !mensajeError &&
+              promedio !== null &&
+              promedio < 11
             "
           >
-            {{ estado }}
+
+            {{
+              cargando
+                ? 'Consultando...'
+                : mensajeError
+                  ? 'No disponible'
+                  : estado
+            }}
+
           </span>
 
         </div>
 
         <p>
-          {{ mensajeAcademico }}
+
+          {{
+            cargando
+              ? 'Estamos consultando tus calificaciones.'
+              : mensajeError
+                ? 'No se pudo consultar tu rendimiento académico.'
+                : mensajeAcademico
+          }}
+
         </p>
 
       </section>
 
-      <!-- BOTÓN VOLVER -->
+      <!-- ACCIONES -->
       <div class="actions">
 
         <a

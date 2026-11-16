@@ -419,3 +419,24 @@ tbody tr:last-child td {
     align-items: flex-start;
   }
 }
+
+.logout-link {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.logout-link:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.logout-link:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

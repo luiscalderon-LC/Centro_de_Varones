@@ -129,6 +129,26 @@ export const routes: Routes = [
     component: MisCalificaciones
   },
 
+  // RUTAS TEMPORALES DEL ESTUDIANTE
+  {
+    path: 'mi-promedio',
+    loadComponent: () =>
+      import('./features/estudiante/pages/mi-promedio/mi-promedio')
+        .then(m => m.MiPromedio)
+  },
+  {
+    path: 'notas-necesarias',
+    loadComponent: () =>
+      import('./features/estudiante/pages/notas-necesarias/notas-necesarias')
+        .then(m => m.NotasNecesarias)
+  },
+  {
+    path: 'historial',
+    loadComponent: () =>
+      import('./features/estudiante/pages/historial/historial')
+        .then(m => m.Historial)
+  },
+
   // RUTA DESCONOCIDA
   {
     path: '**',

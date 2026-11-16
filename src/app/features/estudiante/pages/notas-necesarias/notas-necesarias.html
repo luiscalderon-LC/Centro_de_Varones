@@ -1,0 +1,315 @@
+
+<div class="dashboard">
+
+  <!-- ENCABEZADO -->
+  <header class="topbar">
+
+    <div class="school">
+      <img
+        src="/images/insignia-centro-varones.png"
+        alt="Insignia del colegio"
+        class="school-logo"
+      />
+
+      <div>
+        <strong>I.E. N.° 20874</strong>
+        <small>Centro de Varones - Cañete</small>
+      </div>
+    </div>
+
+    <div class="student-header">
+      <strong>{{ estudiante.nombre || 'Estudiante' }}</strong>
+      <small>Estudiante | Centro de Varones</small>
+    </div>
+
+  </header>
+
+  <div class="dashboard-body">
+
+    <!-- MENÚ LATERAL -->
+    <aside class="sidebar">
+
+      <p class="menu-title">MENÚ PRINCIPAL</p>
+
+      <nav>
+        <a routerLink="/panel-estudiante">
+          Panel principal
+        </a>
+
+        <a routerLink="/mis-calificaciones">
+          Mis calificaciones
+        </a>
+
+        <a routerLink="/mi-promedio">
+          Mi promedio
+        </a>
+
+        <a routerLink="/notas-necesarias" class="active">
+          Notas que necesito
+        </a>
+
+        <a routerLink="/historial">
+          Historial
+        </a>
+
+        <button
+          type="button"
+          class="logout-button"
+          (click)="cerrarSesion()"
+          [disabled]="cerrandoSesion"
+        >
+          {{ cerrandoSesion ? 'Cerrando sesión...' : 'Cerrar sesión' }}
+        </button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <p>Proyecto académico</p>
+        <small>Centro de Varones N.° 20874</small>
+      </div>
+
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="content">
+
+      <a routerLink="/panel-estudiante" class="btn-back">
+        ← Volver al panel
+      </a>
+
+      <div class="page-heading">
+        <div>
+          <h1>Notas que necesito</h1>
+          <p>
+            Calcula qué calificación necesitas para mejorar tu promedio.
+          </p>
+        </div>
+
+        <span class="school-year">
+          Año escolar: {{ estudiante.anio }}
+        </span>
+      </div>
+
+      <!-- FILTROS -->
+      <section class="filter-section">
+
+        <h2>Consultar curso</h2>
+
+        <div class="filters">
+
+          <div class="field">
+            <label for="curso">Curso</label>
+
+            <select
+              id="curso"
+              [(ngModel)]="cursoSeleccionado"
+              (ngModelChange)="notaSimulada = null"
+              [disabled]="cargando || cursosDisponibles.length === 0"
+            >
+              @for (curso of cursosDisponibles; track curso.nombre) {
+                <option [value]="curso.nombre">
+                  {{ curso.nombre }}
+                </option>
+              } @empty {
+                <option value="">Sin cursos disponibles</option>
+              }
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="periodo">Periodo académico</label>
+
+            <select
+              id="periodo"
+              [(ngModel)]="periodoSeleccionado"
+              (ngModelChange)="actualizarCursos()"
+              [disabled]="cargando"
+            >
+              @for (periodo of periodos; track periodo) {
+                <option [value]="periodo">
+                  {{ periodo }}
+                </option>
+              }
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="grado">Grado y sección</label>
+            <input id="grado" [value]="estudiante.grado" disabled />
+          </div>
+
+          <div class="field">
+            <label for="anio">Año escolar</label>
+            <input id="anio" [value]="estudiante.anio" disabled />
+          </div>
+
+        </div>
+      </section>
+
+      @if (cargando) {
+        <p>Consultando calificaciones...</p>
+      }
+
+      @if (mensajeError) {
+        <p class="error-message" role="alert">
+          {{ mensajeError }}
+        </p>
+      }
+
+      <!-- RESUMEN -->
+      <section class="stats">
+
+        <div class="stat-card">
+          <p>Promedio actual</p>
+
+          <h2>
+            {{
+              cargando || mensajeError || promedioActual === null
+                ? '—'
+                : (promedioActual | number:'1.1-1')
+            }}
+          </h2>
+
+          <small>Según las notas registradas</small>
+        </div>
+
+        <div class="stat-card">
+          <p>Nota mínima aprobatoria</p>
+          <h2>{{ notaAprobatoria }}</h2>
+          <small>Escala de 0 a 20</small>
+        </div>
+
+        <div class="stat-card">
+          <p>Estado actual</p>
+
+          <h2
+            class="academic-status"
+            [class.failed]="
+              promedioActual !== null &&
+              promedioActual < notaAprobatoria
+            "
+          >
+            {{
+              cargando || mensajeError
+                ? 'No disponible'
+                : estadoActual
+            }}
+          </h2>
+
+          <small>Resultado provisional</small>
+        </div>
+
+      </section>
+
+      <!-- RESULTADO DE NOTA NECESARIA -->
+      <section class="courses-section">
+
+        <div class="section-heading">
+          <h2>¿Qué nota necesito para aprobar?</h2>
+          <p>
+            {{ cursoSeleccionado || 'Selecciona un curso' }}
+            - {{ periodoSeleccionado }}
+          </p>
+        </div>
+
+        @if (!cargando && !mensajeError) {
+
+          <div class="result-card">
+
+            <p>Nota necesaria en una próxima evaluación</p>
+
+            <h2>
+              {{
+                notaNecesaria === null
+                  ? '—'
+                  : notaNecesaria > 20
+                    ? 'Mayor a 20'
+                    : notaNecesaria <= 0
+                      ? '0'
+                      : (notaNecesaria | number:'1.1-2')
+              }}
+            </h2>
+
+            <p>{{ mensajeOrientacion }}</p>
+
+          </div>
+
+        }
+
+      </section>
+
+      <!-- SIMULADOR -->
+      <section class="courses-section">
+
+        <div class="section-heading">
+          <h2>Simular una próxima nota</h2>
+          <p>
+            Comprueba cómo cambiaría tu promedio.
+          </p>
+        </div>
+
+        <div class="simulation-grid">
+
+          <div class="field">
+            <label for="notaSimulada">
+              ¿Qué nota crees que obtendrás?
+            </label>
+
+            <input
+              id="notaSimulada"
+              type="number"
+              min="0"
+              max="20"
+              step="0.5"
+              placeholder="Ejemplo: 15"
+              [(ngModel)]="notaSimulada"
+              [disabled]="cargando || !!mensajeError || !cursoActual"
+            />
+          </div>
+
+          <div class="simulation-result">
+
+            <p>Nuevo promedio estimado</p>
+
+            <h2>
+              {{
+                promedioSimulado === null
+                  ? '—'
+                  : (promedioSimulado | number:'1.1-1')
+              }}
+            </h2>
+
+            <span
+              class="status"
+              [class.approved]="
+                promedioSimulado !== null &&
+                promedioSimulado >= notaAprobatoria
+              "
+              [class.disapproved]="
+                promedioSimulado !== null &&
+                promedioSimulado < notaAprobatoria
+              "
+            >
+              {{ estadoSimulado }}
+            </span>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <p class="average-note">
+        Esta herramienta realiza una simulación con una evaluación
+        adicional de igual peso. No registra ni modifica notas
+        en la base de datos y no considera ponderaciones.
+      </p>
+
+      <footer class="page-footer">
+        Proyecto académico - I.E. Centro de Varones N.° 20874
+      </footer>
+
+    </main>
+
+  </div>
+
+</div>

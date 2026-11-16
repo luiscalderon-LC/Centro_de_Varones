@@ -1,0 +1,344 @@
+
+<div class="dashboard">
+
+  <!-- ENCABEZADO -->
+  <header class="topbar">
+
+    <div class="school">
+      <img
+        src="/images/insignia-centro-varones.png"
+        alt="Insignia del Centro de Varones"
+        class="school-logo"
+      />
+
+      <div>
+        <strong>I.E. N.° 20874</strong>
+        <small>Centro de Varones - Cañete</small>
+      </div>
+    </div>
+
+    <div class="student-header">
+      <strong>{{ estudiante.nombre || 'Estudiante' }}</strong>
+      <small>Estudiante | Centro de Varones</small>
+    </div>
+
+  </header>
+
+  <div class="dashboard-body">
+
+    <!-- MENÚ LATERAL -->
+    <aside class="sidebar">
+
+      <p class="menu-title">MENÚ PRINCIPAL</p>
+
+      <nav>
+
+        <a routerLink="/panel-estudiante">
+          Panel principal
+        </a>
+
+        <a routerLink="/mis-calificaciones">
+          Mis calificaciones
+        </a>
+
+        <a routerLink="/mi-promedio">
+          Mi promedio
+        </a>
+
+        <a routerLink="/notas-necesarias">
+          Notas que necesito
+        </a>
+
+        <a routerLink="/historial" class="active">
+          Historial
+        </a>
+
+        <button
+          type="button"
+          class="logout-button"
+          (click)="cerrarSesion()"
+          [disabled]="cerrandoSesion"
+        >
+          {{
+            cerrandoSesion
+              ? 'Cerrando sesión...'
+              : 'Cerrar sesión'
+          }}
+        </button>
+
+      </nav>
+
+      <div class="sidebar-bottom">
+        <p>Proyecto académico</p>
+        <small>Centro de Varones N.° 20874</small>
+      </div>
+
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="content">
+
+      <a routerLink="/panel-estudiante" class="btn-back">
+        ← Volver al panel
+      </a>
+
+      <div class="page-heading">
+
+        <div>
+          <h1>Historial académico</h1>
+          <p>
+            Consulta tus evaluaciones y calificaciones
+            registradas durante el año escolar.
+          </p>
+        </div>
+
+        <span class="school-year">
+          Año escolar: {{ estudiante.anio }}
+        </span>
+
+      </div>
+
+      <!-- FILTROS -->
+      <section class="filter-section">
+
+        <h2>Consultar historial</h2>
+
+        <div class="filters">
+
+          <div class="field">
+
+            <label for="periodo">
+              Periodo académico
+            </label>
+
+            <select
+              id="periodo"
+              [(ngModel)]="periodoSeleccionado"
+              (ngModelChange)="actualizarHistorial()"
+              [disabled]="cargando"
+            >
+              @for (periodo of periodos; track periodo) {
+                <option [value]="periodo">
+                  {{ periodo === 'Todos' ? 'Todos los bimestres' : periodo }}
+                </option>
+              }
+            </select>
+
+          </div>
+
+          <div class="field">
+
+            <label for="curso">
+              Curso
+            </label>
+
+            <select
+              id="curso"
+              [(ngModel)]="cursoSeleccionado"
+              (ngModelChange)="actualizarHistorial()"
+              [disabled]="cargando"
+            >
+              @for (curso of cursosDisponibles; track curso) {
+                <option [value]="curso">
+                  {{ curso === 'Todos' ? 'Todos los cursos' : curso }}
+                </option>
+              }
+            </select>
+
+          </div>
+
+          <div class="field">
+            <label for="grado">Grado y sección</label>
+            <input
+              id="grado"
+              [value]="estudiante.grado"
+              disabled
+            />
+          </div>
+
+          <div class="field">
+            <label for="anio">Año escolar</label>
+            <input
+              id="anio"
+              [value]="estudiante.anio"
+              disabled
+            />
+          </div>
+
+        </div>
+
+      </section>
+
+      @if (cargando) {
+        <p>Consultando historial académico...</p>
+      }
+
+      @if (mensajeError) {
+        <p class="error-message" role="alert">
+          {{ mensajeError }}
+        </p>
+      }
+
+      <!-- ESTADÍSTICAS -->
+      <section class="stats">
+
+        <div class="stat-card">
+          <p>Cursos consultados</p>
+          <h2>
+            {{ cargando || mensajeError ? '—' : totalCursos }}
+          </h2>
+          <small>Según los filtros seleccionados</small>
+        </div>
+
+        <div class="stat-card">
+          <p>Evaluaciones calificadas</p>
+          <h2>
+            {{ cargando || mensajeError ? '—' : totalEvaluaciones }}
+          </h2>
+          <small>Notas registradas</small>
+        </div>
+
+        <div class="stat-card">
+          <p>Promedio provisional</p>
+          <h2>
+            {{
+              cargando || mensajeError || promedioGeneral === null
+                ? '—'
+                : (promedioGeneral | number:'1.1-1')
+            }}
+          </h2>
+          <small>Según los cursos y periodos consultados</small>
+        </div>
+
+      </section>
+
+      <!-- HISTORIAL DE CALIFICACIONES -->
+      <section class="courses-section">
+
+        <div class="section-heading">
+          <h2>Registro de calificaciones</h2>
+          <p>
+            Detalle por curso y bimestre
+          </p>
+        </div>
+
+        <div class="table-wrapper">
+
+          <table>
+
+            <thead>
+              <tr>
+                <th>PERIODO</th>
+                <th>CURSO</th>
+                <th>EVALUACIONES</th>
+                <th>PROMEDIO</th>
+                <th>ESTADO</th>
+                <th>ACCIÓN</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              @if (!cargando && !mensajeError) {
+
+                @for (
+                  curso of historial;
+                  track curso.periodo + curso.nombre
+                ) {
+
+                  <tr>
+
+                    <td>
+                      {{ curso.periodo }}
+                    </td>
+
+                    <td>
+                      <strong>{{ curso.nombre }}</strong>
+                    </td>
+
+                    <td>
+                      {{ curso.registradas }} /
+                      {{ curso.evaluaciones.length }}
+                    </td>
+
+                    <td>
+                      <strong>
+                        {{
+                          curso.promedio === null
+                            ? '—'
+                            : (curso.promedio | number:'1.1-1')
+                        }}
+                      </strong>
+                    </td>
+
+                    <td>
+
+                      <span
+                        class="status"
+                        [class.approved]="
+                          curso.promedio !== null &&
+                          curso.promedio >= 11
+                        "
+                        [class.disapproved]="
+                          curso.promedio !== null &&
+                          curso.promedio < 11
+                        "
+                      >
+                        {{ obtenerEstado(curso.promedio) }}
+                      </span>
+
+                    </td>
+
+                    <td>
+                      <a
+                        routerLink="/mis-calificaciones"
+                        [queryParams]="{
+                          curso: curso.nombre,
+                          periodo: curso.periodo
+                        }"
+                        class="btn-view"
+                      >
+                        Ver notas
+                      </a>
+                    </td>
+
+                  </tr>
+
+                } @empty {
+
+                  <tr>
+                    <td colspan="6" class="empty-message">
+                      No hay evaluaciones registradas
+                      para los filtros seleccionados.
+                    </td>
+                  </tr>
+
+                }
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+      <!-- INFORMACIÓN -->
+      <p class="average-note">
+        Este historial muestra las evaluaciones del año escolar
+        consultado. Los promedios son provisionales y no
+        consideran ponderaciones. Los registros de años
+        anteriores todavía no están incluidos.
+      </p>
+
+      <footer class="page-footer">
+        Proyecto académico - I.E. Centro de Varones N.° 20874
+      </footer>
+
+    </main>
+
+  </div>
+
+</div>

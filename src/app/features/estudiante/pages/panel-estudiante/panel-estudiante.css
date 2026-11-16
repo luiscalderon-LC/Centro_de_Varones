@@ -420,3 +420,50 @@ td {
     grid-template-columns: 1fr;
   }
 }
+
+.logout-button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  background: transparent;
+  color: #334155;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.logout-button:hover {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.logout-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* BOTÓN CERRAR SESIÓN */
+
+.logout-button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #334155;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.logout-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

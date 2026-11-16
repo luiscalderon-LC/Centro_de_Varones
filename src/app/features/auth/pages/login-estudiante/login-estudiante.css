@@ -1,36 +1,35 @@
 
-/* LOGIN DOCENTE - CENTRO DE VARONES N.° 20874 */
-
 :host {
   display: block;
-  font-family: Arial, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 * {
   box-sizing: border-box;
 }
 
-/* CONTENEDOR PRINCIPAL */
-
 .login-page {
   min-height: 100vh;
-  min-height: 100dvh;
-  background-color: #f3f4f6;
   display: flex;
   flex-direction: column;
+  background: #f3f4f6;
+  color: #1f2937;
 }
 
-/* ENCABEZADO INSTITUCIONAL */
+/* ENCABEZADO */
 
 .login-header {
-  background-color: #b8202c;
   width: 100%;
-  padding: 12px 30px;
+  background: #b91c1c;
+  color: white;
 }
 
 .header-container {
+  width: 100%;
   max-width: 1200px;
-  margin: 0 auto;
+  min-height: 76px;
+  margin: auto;
+  padding: 12px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -44,90 +43,92 @@
 }
 
 .institution-logo {
-  width: 48px;
-  height: 54px;
+  width: 45px;
+  height: 45px;
   object-fit: contain;
-  background-color: white;
+  background: white;
   padding: 4px;
   border-radius: 6px;
 }
 
 .institution-info h2 {
-  color: #ffffff;
   font-size: 16px;
-  font-weight: 700;
   margin: 0 0 4px;
+  font-weight: 700;
 }
 
 .institution-info p {
-  color: #fce7e7;
-  font-size: 11px;
+  font-size: 12px;
   margin: 0;
+  color: #fee2e2;
 }
 
-.home-link {
-  color: #ffffff;
+.btn-volver {
+  padding: 9px 14px;
+  border: 1px solid white;
+  border-radius: 5px;
+  color: white;
   text-decoration: none;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s;
 }
 
-.home-link:hover {
-  text-decoration: underline;
+.btn-volver:hover {
+  background: white;
+  color: #991b1b;
 }
 
-/* CONTENIDO CENTRAL */
+/* CONTENIDO */
 
 .login-main {
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 40px 20px;
+  padding: 45px 20px;
 }
-
-/* TARJETA BLANCA */
 
 .login-card {
-  background-color: #ffffff;
   width: 100%;
   max-width: 420px;
+  background: white;
+  padding: 32px;
   border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 30px 35px;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
   text-align: center;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
 }
-
-/* ICONO */
 
 .login-icon {
-  width: 55px;
-  height: 55px;
-  background-color: #fde7e9;
-  color: #b8202c;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 18px;
   border-radius: 50%;
+  background: #fef2f2;
   display: flex;
-  align-items: center;
   justify-content: center;
-  font-size: 25px;
-  margin: 0 auto 15px;
+  align-items: center;
 }
 
-/* TÍTULOS */
+.login-icon img {
+  width: 43px;
+  height: 43px;
+  object-fit: contain;
+}
 
 .login-card h1 {
-  color: #303640;
   font-size: 25px;
   font-weight: 700;
-  margin: 0 0 8px;
+  margin: 0 0 9px;
+  color: #1f2937;
 }
 
 .login-subtitle {
-  color: #89929e;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.5;
-  margin: 0 0 25px;
+  color: #6b7280;
+  margin: 0 0 28px;
 }
 
 /* FORMULARIO */
@@ -139,132 +140,126 @@
 }
 
 .login-form label {
-  color: #303640;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
+  color: #374151;
   margin-bottom: 8px;
 }
 
-/* SELECTOR DE USUARIO */
-
 .user-selector {
   display: flex;
-  background-color: #f3f4f6;
-  border-radius: 6px;
-  padding: 4px;
-  margin-bottom: 22px;
   gap: 4px;
+  padding: 4px;
+  background: #f3f4f6;
+  border-radius: 6px;
+  margin-bottom: 23px;
 }
 
-.user-selector a {
+.user-selector a,
+.user-selector span {
   flex: 1;
+  padding: 11px;
   text-align: center;
+  font-size: 13px;
   text-decoration: none;
-  color: #7b8490;
-  font-size: 12px;
-  padding: 10px;
+  color: #6b7280;
   border-radius: 5px;
-  cursor: pointer;
 }
 
-.user-selector a.active {
-  background-color: #b8202c;
-  color: #ffffff;
+.user-selector a:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.user-selector .active {
+  background: #b91c1c;
+  color: white;
   font-weight: 600;
 }
 
-/* CAMPOS */
-
 .login-form input {
   width: 100%;
-  padding: 12px;
-  border: 1px solid #d7dce2;
+  height: 44px;
+  border: 1px solid #d1d5db;
   border-radius: 6px;
-  background-color: #ffffff;
-  font-size: 13px;
-  color: #303640;
+  padding: 0 13px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #1f2937;
+  background: white;
   outline: none;
-  margin-bottom: 18px;
-}
-
-.login-form input::placeholder {
-  color: #a0a7b1;
 }
 
 .login-form input:focus {
-  border-color: #b8202c;
-  box-shadow: 0 0 0 2px rgba(184, 32, 44, 0.1);
+  border-color: #b91c1c;
+  box-shadow: 0 0 0 2px #fee2e2;
 }
 
-/* RECUPERAR CONTRASEÑA */
+.login-form input::placeholder {
+  color: #9ca3af;
+}
 
 .forgot-password {
-  color: #b8202c;
-  font-size: 11px;
+  align-self: flex-end;
+  font-size: 12px;
+  color: #b91c1c;
   text-decoration: none;
-  text-align: right;
-  margin: -5px 0 20px;
+  margin: -5px 0 23px;
 }
 
 .forgot-password:hover {
   text-decoration: underline;
 }
 
-/* BOTÓN INGRESAR */
-
 .login-button {
   width: 100%;
-  background-color: #b8202c;
-  color: #ffffff;
+  height: 45px;
   border: none;
-  padding: 13px;
   border-radius: 6px;
-  font-size: 13px;
+  background: #b91c1c;
+  color: white;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background 0.2s;
 }
 
 .login-button:hover {
-  background-color: #971923;
+  background: #991b1b;
 }
 
 /* PIE DE PÁGINA */
 
 .login-footer {
+  padding: 16px 20px 20px;
   text-align: center;
-  padding: 15px 15px 25px;
+  color: #6b7280;
 }
 
 .login-footer p {
-  color: #7b8490;
   font-size: 12px;
-  margin: 0 0 7px;
+  margin: 0 0 5px;
 }
 
 .login-footer small {
-  color: #9ca3af;
   font-size: 11px;
+  color: #9ca3af;
 }
 
-/* LÍNEA AMARILLA */
-
 .bottom-line {
-  width: 100%;
-  height: 6px;
-  background-color: #f5bd45;
-  flex-shrink: 0;
+  height: 4px;
+  background: #fbbf24;
 }
 
 /* TABLET */
 
 @media (max-width: 768px) {
-  .login-header {
-    padding: 12px 20px;
+  .header-container {
+    padding: 12px 18px;
   }
 
   .login-main {
-    padding: 30px 16px;
+    padding: 35px 18px;
   }
 
   .login-card {
@@ -275,13 +270,14 @@
 /* CELULAR */
 
 @media (max-width: 480px) {
-  .login-header {
+  .header-container {
+    min-height: 68px;
     padding: 10px 14px;
   }
 
   .institution-logo {
-    width: 40px;
-    height: 46px;
+    width: 39px;
+    height: 39px;
   }
 
   .institution-info h2 {
@@ -292,28 +288,29 @@
     font-size: 10px;
   }
 
-  .home-link {
-    font-size: 12px;
+  .btn-volver {
+    font-size: 11px;
+    padding: 8px;
+    white-space: nowrap;
   }
 
   .login-main {
-    padding: 25px 12px;
+    padding: 25px 14px;
   }
 
   .login-card {
-    padding: 25px 20px;
+    padding: 27px 22px;
   }
 
   .login-card h1 {
     font-size: 23px;
   }
 
-  .login-icon {
-    width: 48px;
-    height: 48px;
+  .login-subtitle {
+    font-size: 13px;
   }
 
   .login-footer {
-    padding: 15px 10px 20px;
+    padding: 14px;
   }
 }

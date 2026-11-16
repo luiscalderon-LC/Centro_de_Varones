@@ -1,6 +1,7 @@
 
 <div class="dashboard">
 
+  <!-- ENCABEZADO -->
   <header class="topbar">
 
     <div class="school">
@@ -17,7 +18,7 @@
     </div>
 
     <div class="student-header">
-      <strong>{{ estudiante.nombre }}</strong>
+      <strong>{{ estudiante.nombre || 'Estudiante' }}</strong>
       <small>Estudiante | Centro de Varones</small>
     </div>
 
@@ -25,6 +26,7 @@
 
   <div class="dashboard-body">
 
+    <!-- MENÚ LATERAL -->
     <aside class="sidebar">
 
       <p class="menu-title">MENÚ PRINCIPAL</p>
@@ -54,9 +56,19 @@
           ▤ Historial
         </a>
 
-        <a routerLink="/login-estudiante">
-          ↪ Cerrar sesión
-        </a>
+        <!-- CERRAR SESIÓN REAL -->
+        <button
+          type="button"
+          class="logout-button"
+          (click)="cerrarSesion()"
+          [disabled]="cerrandoSesion"
+        >
+          {{
+            cerrandoSesion
+              ? 'Cerrando sesión...'
+              : '↪ Cerrar sesión'
+          }}
+        </button>
 
       </nav>
 
@@ -67,6 +79,7 @@
 
     </aside>
 
+    <!-- CONTENIDO PRINCIPAL -->
     <main class="content">
 
       <div class="page-heading">
@@ -84,6 +97,20 @@
 
       </div>
 
+      <!-- MENSAJES -->
+      @if (mensaje) {
+        <p style="color: #b91c1c; margin: 12px 0;">
+          {{ mensaje }}
+        </p>
+      }
+
+      @if (cargando) {
+        <p style="margin: 12px 0;">
+          Cargando información del estudiante...
+        </p>
+      }
+
+      <!-- DATOS DEL ESTUDIANTE -->
       <section class="student-card">
 
         <div class="avatar">
@@ -91,15 +118,19 @@
         </div>
 
         <div class="student-info">
-          <h2>{{ estudiante.nombre }}</h2>
+
+          <h2>
+            {{ estudiante.nombre || 'Cargando...' }}
+          </h2>
 
           <p>
             Estudiante - {{ estudiante.grado }}
           </p>
 
           <small>
-            Código: {{ estudiante.codigo }}
+            Documento: {{ estudiante.codigo || 'Pendiente' }}
           </small>
+
         </div>
 
         <span class="period-badge">
@@ -108,23 +139,35 @@
 
       </section>
 
+      <!-- ESTADÍSTICAS -->
       <section class="stats">
 
         <div class="stat-card">
           <p>Cursos matriculados</p>
-          <h2>{{ cursos.length }}</h2>
+
+          <h2>
+            {{ cursos.length }}
+          </h2>
+
           <small>Asignaturas registradas</small>
         </div>
 
         <div class="stat-card">
           <p>Promedio general</p>
+
           <h2>
-            {{ promedioGeneral | number:'1.1-1' }}
+            @if (promedioGeneral !== null) {
+              {{ promedioGeneral | number:'1.1-1' }}
+            } @else {
+              --
+            }
           </h2>
+
           <small>Escala de 0 a 20</small>
         </div>
 
         <div class="stat-card">
+
           <p>Estado académico</p>
 
           <h2
@@ -137,14 +180,17 @@
           <small>
             Según las calificaciones registradas
           </small>
+
         </div>
 
       </section>
 
+      <!-- CURSOS Y CALIFICACIONES -->
       <section class="courses-section">
 
         <div class="section-heading">
           <h2>Mis cursos y calificaciones</h2>
+
           <p>
             Revisa el promedio de cada curso.
           </p>
@@ -175,25 +221,42 @@
 
                   <td>
                     <strong>
-                      {{ curso.promedio | number:'1.1-1' }}
+                      @if (curso.promedio !== null) {
+                        {{ curso.promedio | number:'1.1-1' }}
+                      } @else {
+                        --
+                      }
                     </strong>
                   </td>
 
                   <td>
-                    <span
-                      class="status"
-                      [class.approved]="curso.promedio >= 11"
-                      [class.disapproved]="curso.promedio < 11"
-                    >
-                      {{
-                        curso.promedio >= 11
-                          ? 'Aprobado'
-                          : 'Desaprobado'
-                      }}
-                    </span>
+
+                    @if (curso.promedio !== null) {
+
+                      <span
+                        class="status"
+                        [class.approved]="curso.promedio >= 11"
+                        [class.disapproved]="curso.promedio < 11"
+                      >
+                        {{
+                          curso.promedio >= 11
+                            ? 'Aprobado'
+                            : 'Desaprobado'
+                        }}
+                      </span>
+
+                    } @else {
+
+                      <span class="status">
+                        Sin calificaciones
+                      </span>
+
+                    }
+
                   </td>
 
                   <td>
+
                     <a
                       routerLink="/mis-calificaciones"
                       [queryParams]="{
@@ -204,6 +267,7 @@
                     >
                       Ver notas
                     </a>
+
                   </td>
 
                 </tr>
@@ -215,7 +279,11 @@
                     colspan="4"
                     style="text-align: center; padding: 20px;"
                   >
-                    No hay calificaciones registradas.
+                    @if (cargando) {
+                      Cargando cursos...
+                    } @else {
+                      No hay cursos ni calificaciones disponibles.
+                    }
                   </td>
                 </tr>
 
@@ -229,6 +297,7 @@
 
       </section>
 
+      <!-- PIE DE PÁGINA -->
       <footer class="page-footer">
         Proyecto académico - I.E. Centro de Varones N.° 20874
       </footer>

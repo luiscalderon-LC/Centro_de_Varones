@@ -1,7 +1,7 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, switchMap } from 'rxjs';
 
 // ========================================
 // MATRÍCULAS DE ESTUDIANTES
@@ -91,6 +91,15 @@ export interface GuardarNotaApi {
 }
 
 // ========================================
+// RESPUESTA DEL TOKEN CSRF
+// ========================================
+interface CsrfTokenApi {
+  headerName: string;
+  parameterName: string;
+  token: string;
+}
+
+// ========================================
 // SERVICIO DE CONEXIÓN CON SPRING BOOT
 // ========================================
 @Injectable({
@@ -101,9 +110,25 @@ export class NotasApiService {
   private readonly apiUrl =
     'http://localhost:8081/api';
 
+  // ENVIAR LA SESIÓN DEL USUARIO AUTENTICADO
+  private readonly opciones = {
+    withCredentials: true
+  };
+
   constructor(
     private http: HttpClient
   ) {}
+
+  // ======================================
+  // OBTENER TOKEN CSRF
+  // ======================================
+  private obtenerTokenCsrf(): Observable<CsrfTokenApi> {
+
+    return this.http.get<CsrfTokenApi>(
+      `${this.apiUrl}/auth/csrf`,
+      this.opciones
+    );
+  }
 
   // ======================================
   // 1. CONSULTAR ESTUDIANTES
@@ -111,7 +136,8 @@ export class NotasApiService {
   obtenerEstudiantes(): Observable<EstudianteApi[]> {
 
     return this.http.get<EstudianteApi[]>(
-      `${this.apiUrl}/estudiantes`
+      `${this.apiUrl}/estudiantes`,
+      this.opciones
     );
   }
 
@@ -121,7 +147,8 @@ export class NotasApiService {
   obtenerAsignaturas(): Observable<AsignaturaApi[]> {
 
     return this.http.get<AsignaturaApi[]>(
-      `${this.apiUrl}/asignaturas`
+      `${this.apiUrl}/asignaturas`,
+      this.opciones
     );
   }
 
@@ -131,7 +158,8 @@ export class NotasApiService {
   obtenerGradosSecciones(): Observable<GradoSeccionApi[]> {
 
     return this.http.get<GradoSeccionApi[]>(
-      `${this.apiUrl}/grados-secciones`
+      `${this.apiUrl}/grados-secciones`,
+      this.opciones
     );
   }
 
@@ -141,7 +169,8 @@ export class NotasApiService {
   obtenerAsignaciones(): Observable<AsignacionDocenteApi[]> {
 
     return this.http.get<AsignacionDocenteApi[]>(
-      `${this.apiUrl}/asignaciones`
+      `${this.apiUrl}/asignaciones`,
+      this.opciones
     );
   }
 
@@ -153,7 +182,8 @@ export class NotasApiService {
   ): Observable<MatriculaApi[]> {
 
     return this.http.get<MatriculaApi[]>(
-      `${this.apiUrl}/matriculas/salon/${idGradoSeccion}`
+      `${this.apiUrl}/matriculas/salon/${idGradoSeccion}`,
+      this.opciones
     );
   }
 
@@ -165,7 +195,8 @@ export class NotasApiService {
   ): Observable<EvaluacionApi[]> {
 
     return this.http.get<EvaluacionApi[]>(
-      `${this.apiUrl}/evaluaciones/asignacion/${idAsignacion}`
+      `${this.apiUrl}/evaluaciones/asignacion/${idAsignacion}`,
+      this.opciones
     );
   }
 
@@ -177,7 +208,8 @@ export class NotasApiService {
   ): Observable<RegistroNotaApi[]> {
 
     return this.http.get<RegistroNotaApi[]>(
-      `${this.apiUrl}/notas/matricula/${idMatricula}`
+      `${this.apiUrl}/notas/matricula/${idMatricula}`,
+      this.opciones
     );
   }
 
@@ -188,9 +220,23 @@ export class NotasApiService {
     nota: GuardarNotaApi
   ): Observable<RegistroNotaApi> {
 
-    return this.http.post<RegistroNotaApi>(
-      `${this.apiUrl}/notas`,
-      nota
+    return this.obtenerTokenCsrf().pipe(
+
+      switchMap(csrf => {
+
+        return this.http.post<RegistroNotaApi>(
+          `${this.apiUrl}/notas`,
+          nota,
+          {
+            withCredentials: true,
+            headers: {
+              [csrf.headerName]: csrf.token
+            }
+          }
+        );
+
+      })
+
     );
   }
 
@@ -202,9 +248,23 @@ export class NotasApiService {
     nota: GuardarNotaApi
   ): Observable<RegistroNotaApi> {
 
-    return this.http.put<RegistroNotaApi>(
-      `${this.apiUrl}/notas/${idNota}`,
-      nota
+    return this.obtenerTokenCsrf().pipe(
+
+      switchMap(csrf => {
+
+        return this.http.put<RegistroNotaApi>(
+          `${this.apiUrl}/notas/${idNota}`,
+          nota,
+          {
+            withCredentials: true,
+            headers: {
+              [csrf.headerName]: csrf.token
+            }
+          }
+        );
+
+      })
+
     );
   }
 }

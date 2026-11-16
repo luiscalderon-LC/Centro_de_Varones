@@ -7,22 +7,42 @@ import {
 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { forkJoin } from 'rxjs';
 
 import {
-  DatosAcademicosService
-} from '../../../../core/services/datos-academicos';
+  HttpClient,
+  HttpErrorResponse
+} from '@angular/common/http';
 
 import {
-  NotasApiService,
-  EvaluacionApi
-} from '../../../../core/services/notas-api';
+  ActivatedRoute,
+  Router,
+  RouterLink
+} from '@angular/router';
 
-interface Curso {
+import {
+  AuthEstudianteService
+} from '../../../../core/services/auth-estudiante';
+
+import {
+  PanelEstudianteApiService
+} from '../../../../core/services/panel-estudiante-api';
+
+// EVALUACIONES DEL ESTUDIANTE
+interface EvaluacionEstudiante {
   nombre: string;
-  evaluacion1: number | null;
-  evaluacion2: number | null;
+  calificacion: number | null;
+}
+
+// CURSOS Y BIMESTRES
+interface CursoEstudiante {
+  nombre: string;
+  periodo: string;
+  evaluaciones: EvaluacionEstudiante[];
+}
+
+// RESPUESTA DEL BACKEND
+interface CalificacionesResponse {
+  cursos: CursoEstudiante[];
 }
 
 @Component({
@@ -38,33 +58,39 @@ interface Curso {
 })
 export class MisCalificaciones implements OnInit {
 
-  // IDENTIFICADORES TEMPORALES PARA PRUEBAS
-  estudianteId = 2;
+  // ENDPOINT DE SPRING BOOT
+  private readonly apiUrl =
+    'http://localhost:8081/api/estudiante/mis-calificaciones';
 
-  private readonly idMatricula = 1;
-  private readonly idAsignacion = 1;
-
-  // INFORMACIÓN DEL ESTUDIANTE
+  // ESTUDIANTE AUTENTICADO
   estudiante = {
     nombre: 'Cargando estudiante...',
-    grado: '5.° A',
+    grado: 'Pendiente de consultar',
     anio: 2026
   };
 
-  // CURSOS Y CALIFICACIONES
-  cursos: Curso[] = [];
+  // CURSOS Y EVALUACIONES
+  cursos: CursoEstudiante[] = [];
+  nombresCursos: string[] = [];
 
-  cursoSeleccionado = 'Matemáticas';
+  // FILTROS
+  cursoSeleccionado = '';
   periodoSeleccionado = 'I Bimestre';
 
-  // ESTADOS DE LA PANTALLA
-  cargando = false;
+  // ESTADOS
+  cargando = true;
+  cerrandoSesion = false;
   mensajeError = '';
+
+  // INFORMACIÓN ORIGINAL DEL BACKEND
+  private cursosApi: CursoEstudiante[] = [];
 
   constructor(
     private route: ActivatedRoute,
-    private datosService: DatosAcademicosService,
-    private notasApi: NotasApiService,
+    private router: Router,
+    private http: HttpClient,
+    private auth: AuthEstudianteService,
+    private panelApi: PanelEstudianteApiService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -78,73 +104,58 @@ export class MisCalificaciones implements OnInit {
       const curso = params.get('curso');
       const periodo = params.get('periodo');
 
-      if (
-        curso &&
-        this.datosService.cursos.includes(curso)
-      ) {
+      if (curso) {
         this.cursoSeleccionado = curso;
       }
 
-      if (
-        periodo &&
-        this.datosService.periodos.includes(periodo)
-      ) {
+      if (periodo) {
         this.periodoSeleccionado = periodo;
       }
 
       this.cargarCalificaciones();
-
     });
   }
 
-  // OBTENER ESTUDIANTE REAL DESDE SQL SERVER
+  // OBTENER ESTUDIANTE REAL
   cargarEstudiante(): void {
 
-    this.estudiante.nombre = 'Cargando estudiante...';
+    this.panelApi.obtenerMisDatos().subscribe({
 
-    this.notasApi.obtenerEstudiantes().subscribe({
+      next: (datos) => {
 
-      next: estudiantes => {
+        this.estudiante.nombre =
+          datos.nombre || 'Sin nombre registrado';
 
-        console.log(
-          'Estudiantes recibidos desde SQL Server:',
-          estudiantes
-        );
+        this.estudiante.grado =
+          datos.grado || 'Sin matrícula';
 
-        const encontrado = estudiantes.find(
-          estudiante =>
-            Number(estudiante.idEstudiante) ===
-            this.estudianteId
-        );
-
-        if (encontrado) {
-
-          this.estudiante.nombre =
-            `${encontrado.nombres} ${encontrado.apellidos}`;
-
-        } else {
-
-          this.estudiante.nombre =
-            'Estudiante no encontrado';
-
+        if (datos.anio != null) {
+          this.estudiante.anio = datos.anio;
         }
 
         this.cdr.detectChanges();
       },
 
-      error: error => {
+      error: (error: HttpErrorResponse) => {
 
         console.error(
           'Error al consultar estudiante:',
           error
         );
 
+        if (
+          error.status === 401 ||
+          error.status === 403
+        ) {
+          this.router.navigate(['/login-estudiante']);
+          return;
+        }
+
         this.estudiante.nombre =
-          'Error al cargar estudiante';
+          'No se pudo cargar el estudiante';
 
         this.cdr.detectChanges();
       }
-
     });
   }
 
@@ -153,113 +164,51 @@ export class MisCalificaciones implements OnInit {
 
     this.cargando = true;
     this.mensajeError = '';
-    this.cursos = [];
 
-    this.cdr.detectChanges();
+    this.http.get<CalificacionesResponse>(
+      this.apiUrl,
+      {
+        withCredentials: true
+      }
+    ).subscribe({
 
-    // INTEGRACIÓN INICIAL:
-    // MATEMÁTICAS - 5.° A - AÑO 2026
-    if (this.cursoSeleccionado !== 'Matemáticas') {
-
-      this.cargando = false;
-
-      this.mensajeError =
-        'Todavía no hay datos reales configurados para este curso.';
-
-      this.cdr.detectChanges();
-
-      return;
-    }
-
-    const idPeriodo = this.obtenerIdPeriodo();
-
-    forkJoin({
-
-      evaluaciones:
-        this.notasApi.obtenerEvaluaciones(
-          this.idAsignacion
-        ),
-
-      notas:
-        this.notasApi.obtenerNotas(
-          this.idMatricula
-        )
-
-    }).subscribe({
-
-      next: respuesta => {
+      next: (respuesta: CalificacionesResponse) => {
 
         console.log(
-          'Evaluaciones recibidas:',
-          respuesta.evaluaciones
+          'Calificaciones recibidas:',
+          respuesta
         );
 
-        console.log(
-          'Notas recibidas:',
-          respuesta.notas
-        );
+        this.cursosApi = respuesta.cursos ?? [];
 
-        // FILTRAR EVALUACIONES POR BIMESTRE
-        const evaluaciones = respuesta.evaluaciones
-          .filter(
-            evaluacion =>
-              evaluacion.idPeriodo === idPeriodo
+        // OBTENER NOMBRES DE CURSOS
+        this.nombresCursos = [
+          ...new Set(
+            this.cursosApi.map(
+              curso => curso.nombre
+            )
           )
-          .sort(
-            (a, b) =>
-              a.idEvaluacion - b.idEvaluacion
-          );
+        ];
 
-        const evaluacion1 = evaluaciones[0];
-        const evaluacion2 = evaluaciones[1];
+        // SELECCIONAR PRIMER CURSO DISPONIBLE
+        if (
+          !this.cursoSeleccionado ||
+          !this.nombresCursos.includes(
+            this.cursoSeleccionado
+          )
+        ) {
+          this.cursoSeleccionado =
+            this.nombresCursos[0] ?? '';
+        }
 
-        // BUSCAR NOTA DE CADA EVALUACIÓN
-        const buscarNota = (
-          evaluacion: EvaluacionApi | undefined
-        ): number | null => {
-
-          if (!evaluacion) {
-            return null;
-          }
-
-          const nota = respuesta.notas.find(
-            registro =>
-              registro.idEvaluacion ===
-                evaluacion.idEvaluacion &&
-              registro.estado === true
-          );
-
-          if (!nota || nota.calificacion == null) {
-            return null;
-          }
-
-          const calificacion =
-            Number(nota.calificacion);
-
-          return Number.isFinite(calificacion)
-            ? calificacion
-            : null;
-        };
-
-        // ACTUALIZAR CURSO CON NOTAS REALES
-        this.cursos = [{
-
-          nombre: 'Matemáticas',
-
-          evaluacion1:
-            buscarNota(evaluacion1),
-
-          evaluacion2:
-            buscarNota(evaluacion2)
-
-        }];
+        // MOSTRAR CURSOS DEL BIMESTRE
+        this.actualizarCursos();
 
         this.cargando = false;
-
         this.cdr.detectChanges();
       },
 
-      error: error => {
+      error: (error: HttpErrorResponse) => {
 
         console.error(
           'Error al consultar calificaciones:',
@@ -268,30 +217,54 @@ export class MisCalificaciones implements OnInit {
 
         this.cargando = false;
 
+        // SESIÓN NO AUTORIZADA
+        if (
+          error.status === 401 ||
+          error.status === 403
+        ) {
+          this.router.navigate(['/login-estudiante']);
+          return;
+        }
+
+        if (error.status === 0) {
+
+          this.mensajeError =
+            'No se pudo conectar con Spring Boot.';
+
+          this.cdr.detectChanges();
+          return;
+        }
+
+        if (error.status === 404) {
+
+          this.mensajeError =
+            'No se encontró el servicio de calificaciones.';
+
+          this.cdr.detectChanges();
+          return;
+        }
+
         this.mensajeError =
           'No se pudieron consultar las calificaciones.';
 
         this.cdr.detectChanges();
       }
-
     });
   }
 
-  // OBTENER IDENTIFICADOR DEL BIMESTRE
-  obtenerIdPeriodo(): number {
+  // FILTRAR CURSOS POR BIMESTRE
+  actualizarCursos(): void {
 
-    const periodos: Record<string, number> = {
-      'I Bimestre': 1,
-      'II Bimestre': 2,
-      'III Bimestre': 3,
-      'IV Bimestre': 4
-    };
+    this.cursos = this.cursosApi.filter(
+      curso =>
+        curso.periodo === this.periodoSeleccionado
+    );
 
-    return periodos[this.periodoSeleccionado] ?? 1;
+    this.cdr.detectChanges();
   }
 
-  // OBTENER CURSO SELECCIONADO
-  get cursoActual(): Curso | undefined {
+  // CURSO SELECCIONADO
+  get cursoActual(): CursoEstudiante | undefined {
 
     return this.cursos.find(
       curso =>
@@ -308,13 +281,14 @@ export class MisCalificaciones implements OnInit {
       return null;
     }
 
-    const notas = [
-      curso.evaluacion1,
-      curso.evaluacion2
-    ].filter(
-      (nota): nota is number =>
-        nota !== null
-    );
+    const notas = curso.evaluaciones
+      .map(
+        evaluacion => evaluacion.calificacion
+      )
+      .filter(
+        (nota): nota is number =>
+          nota !== null
+      );
 
     if (notas.length === 0) {
       return null;
@@ -357,10 +331,13 @@ export class MisCalificaciones implements OnInit {
       return 0;
     }
 
-    return Math.max(0, 11 - promedio);
+    return Math.max(
+      0,
+      11 - promedio
+    );
   }
 
-  // MOSTRAR MENSAJE ACADÉMICO
+  // MENSAJE ACADÉMICO
   get mensajeAcademico(): string {
 
     const promedio = this.promedio;
@@ -370,14 +347,51 @@ export class MisCalificaciones implements OnInit {
     }
 
     if (promedio >= 11) {
-      return 'Has alcanzado la nota mínima aprobatoria en las evaluaciones registradas. Continúa manteniendo tu buen rendimiento académico.';
+      return 'Has alcanzado la nota mínima aprobatoria en las evaluaciones registradas.';
     }
 
     if (promedio >= 9) {
-      return `Estás cerca de aprobar. Te faltan ${this.puntosFaltantes.toFixed(1)} puntos en tu promedio provisional para alcanzar la nota mínima de 11.`;
+      return `Estás cerca de aprobar. Te faltan ${this.puntosFaltantes.toFixed(1)} puntos en tu promedio provisional para alcanzar 11.`;
     }
 
-    return `Actualmente estás desaprobado en este curso. Te faltan ${this.puntosFaltantes.toFixed(1)} puntos en tu promedio provisional para alcanzar la nota mínima de 11.`;
+    return `Actualmente estás desaprobado en este curso. Te faltan ${this.puntosFaltantes.toFixed(1)} puntos en tu promedio provisional para alcanzar 11.`;
   }
 
+  // CERRAR SESIÓN
+  cerrarSesion(): void {
+
+    if (this.cerrandoSesion) {
+      return;
+    }
+
+    this.cerrandoSesion = true;
+    this.mensajeError = '';
+
+    this.auth.cerrarSesion().subscribe({
+
+      next: () => {
+
+        this.cerrandoSesion = false;
+
+        this.router.navigate([
+          '/login-estudiante'
+        ]);
+      },
+
+      error: (error: HttpErrorResponse) => {
+
+        console.error(
+          'Error al cerrar sesión:',
+          error
+        );
+
+        this.cerrandoSesion = false;
+
+        this.mensajeError =
+          'No se pudo cerrar sesión. Intenta nuevamente.';
+
+        this.cdr.detectChanges();
+      }
+    });
+  }
 }

@@ -34,6 +34,11 @@ import {
   GuardarNotaApi
 } from '../../../../core/services/notas-api';
 
+import {
+  SesionService
+} from '../../../../core/services/sesion';
+
+// DATOS DEL ESTUDIANTE
 interface Estudiante {
   id: number;
   idMatricula: number;
@@ -42,6 +47,7 @@ interface Estudiante {
   evaluacion2: number | null;
 }
 
+// CAMBIOS DE CALIFICACIONES
 interface CambioNota {
   idEvaluacion: number;
   idMatricula: number;
@@ -62,10 +68,10 @@ interface CambioNota {
 })
 export class EditarNotas implements OnInit {
 
-  // DOCENTE TEMPORAL HASTA IMPLEMENTAR LOGIN
-  private readonly idDocente = 1;
+  // DOCENTE AUTENTICADO
+  private idDocente: number | null = null;
 
-  // DATOS REALES DEL BACKEND
+  // DATOS DEL BACKEND
   private asignaturas: AsignaturaApi[] = [];
   private gradosSecciones: GradoSeccionApi[] = [];
   private asignaciones: AsignacionDocenteApi[] = [];
@@ -104,13 +110,24 @@ export class EditarNotas implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private notasApi: NotasApiService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private sesionService: SesionService
   ) {}
 
   // ======================================
   // INICIAR COMPONENTE
   // ======================================
   ngOnInit(): void {
+
+    const usuario = this.sesionService.obtenerUsuario();
+
+    if (!usuario || usuario.rol !== 'docente') {
+      this.router.navigate(['/login-docente']);
+      return;
+    }
+
+    // OBTENER ID DEL DOCENTE QUE INICIÓ SESIÓN
+    this.idDocente = usuario.id;
 
     const params = this.route.snapshot.queryParamMap;
 
@@ -131,12 +148,18 @@ export class EditarNotas implements OnInit {
   }
 
   // ======================================
-  // CONSULTAR CURSOS Y SALONES REALES
+  // CONSULTAR CURSOS Y SALONES
   // ======================================
   cargarFiltros(
     cursoInicial: string | null,
     seccionInicial: string | null
   ): void {
+
+    if (this.idDocente === null) {
+      this.error = true;
+      this.mensaje = 'No se encontró la sesión del docente.';
+      return;
+    }
 
     this.cargando = true;
     this.mensaje = '';
@@ -158,8 +181,11 @@ export class EditarNotas implements OnInit {
           s => s.estado
         );
 
+        // SOLO ASIGNACIONES DEL DOCENTE AUTENTICADO
         this.asignaciones = respuesta.asignaciones.filter(
-          a => a.estado && a.idDocente === this.idDocente
+          a =>
+            a.estado &&
+            a.idDocente === this.idDocente
         );
 
         const cursosAsignados = this.asignaturas.filter(
@@ -178,6 +204,20 @@ export class EditarNotas implements OnInit {
           })
         );
 
+        if (this.cursos.length === 0) {
+          this.salones = [];
+          this.estudiantes = [];
+          this.cursoSeleccionado = '';
+          this.seccionSeleccionada = '';
+          this.cargando = false;
+
+          this.mensaje =
+            'No tienes cursos asignados. Consulta con el director.';
+
+          this.cdr.detectChanges();
+          return;
+        }
+
         const cursoCoincidente = this.cursos.find(
           c =>
             c.nombre.toLowerCase() ===
@@ -190,6 +230,7 @@ export class EditarNotas implements OnInit {
           '';
 
         this.actualizarSalones(seccionInicial);
+
         this.cdr.detectChanges();
       },
 
@@ -227,6 +268,7 @@ export class EditarNotas implements OnInit {
       this.seccionSeleccionada = '';
       this.estudiantes = [];
       this.cargando = false;
+
       this.cdr.detectChanges();
       return;
     }
@@ -292,6 +334,7 @@ export class EditarNotas implements OnInit {
       this.cargando = false;
       this.mensaje =
         'No hay cursos o salones disponibles para esta selección.';
+
       this.cdr.detectChanges();
       return;
     }
@@ -299,7 +342,8 @@ export class EditarNotas implements OnInit {
     const asignacion = this.asignaciones.find(
       a =>
         a.idAsignatura === asignatura.idAsignatura &&
-        a.idGradoSeccion === salon.idGradoSeccion
+        a.idGradoSeccion === salon.idGradoSeccion &&
+        a.idDocente === this.idDocente
     );
 
     if (!asignacion) {
@@ -308,6 +352,7 @@ export class EditarNotas implements OnInit {
       this.error = true;
       this.mensaje =
         'El docente no tiene asignación para este curso y salón.';
+
       this.cdr.detectChanges();
       return;
     }
@@ -474,7 +519,8 @@ export class EditarNotas implements OnInit {
       estudiante.evaluacion1,
       estudiante.evaluacion2
     ].filter(
-      (nota): nota is number => nota !== null
+      (nota): nota is number =>
+        nota !== null && nota !== undefined
     );
 
     if (notas.length === 0) {
@@ -553,6 +599,7 @@ export class EditarNotas implements OnInit {
       this.error = true;
       this.mensaje =
         'No hay evaluaciones configuradas para registrar notas.';
+
       this.cdr.detectChanges();
       return;
     }
@@ -571,7 +618,11 @@ export class EditarNotas implements OnInit {
         const valor = valores[i];
         const evaluacion = this.evaluaciones[i];
 
-        if (valor === null || valor === undefined) {
+        if (
+          valor === null ||
+          valor === undefined ||
+          valor === ('' as unknown as number)
+        ) {
           continue;
         }
 
@@ -585,6 +636,7 @@ export class EditarNotas implements OnInit {
           this.error = true;
           this.mensaje =
             'Las calificaciones deben estar entre 0 y 20.';
+
           this.cdr.detectChanges();
           return;
         }
@@ -594,6 +646,7 @@ export class EditarNotas implements OnInit {
           this.error = true;
           this.mensaje =
             'La evaluación todavía no está configurada.';
+
           this.cdr.detectChanges();
           return;
         }
@@ -625,6 +678,7 @@ export class EditarNotas implements OnInit {
 
       this.mensaje =
         'No hay cambios nuevos para guardar.';
+
       this.cdr.detectChanges();
       return;
     }
