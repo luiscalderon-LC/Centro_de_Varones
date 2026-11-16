@@ -6,12 +6,14 @@ import org.springframework.web.bind.annotation.*;
 
 import pe.edu.centrodevarones.app.entity.Estudiante;
 import pe.edu.centrodevarones.app.service.EstudianteService;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/estudiantes")
+@CrossOrigin(origins = "http://localhost:4200")
 public class EstudianteController {
 
     private final EstudianteService service;

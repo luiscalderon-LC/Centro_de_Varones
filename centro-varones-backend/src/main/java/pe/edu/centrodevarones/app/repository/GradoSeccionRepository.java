@@ -13,11 +13,19 @@ import java.util.Optional;
 public interface GradoSeccionRepository
         extends JpaRepository<GradoSeccion, Integer> {
 
+    // ==========================================
+    // LISTAR GRADOS Y SECCIONES
+    // ==========================================
+
     // LISTAR GRADOS Y SECCIONES ACTIVOS
     List<GradoSeccion> findByEstadoTrue();
 
     // LISTAR GRADOS Y SECCIONES ELIMINADOS
     List<GradoSeccion> findByEstadoFalse();
+
+    // ==========================================
+    // BUSCAR GRADO, SECCIÓN Y AÑO
+    // ==========================================
 
     // BUSCAR POR GRADO, SECCIÓN Y AÑO ESCOLAR
     Optional<GradoSeccion> findByGradoAndSeccionIgnoreCaseAndAnioEscolar(
@@ -32,6 +40,10 @@ public interface GradoSeccionRepository
             String seccion,
             Integer anioEscolar
     );
+
+    // ==========================================
+    // FILTROS DE CONSULTA
+    // ==========================================
 
     // LISTAR GRADOS Y SECCIONES ACTIVOS POR AÑO
     List<GradoSeccion> findByAnioEscolarAndEstadoTrue(
@@ -54,4 +66,26 @@ public interface GradoSeccionRepository
             String seccion,
             Integer anioEscolar
     );
+
+    // ==========================================
+    // NUEVOS MÉTODOS PARA MATRÍCULA
+    // ==========================================
+
+    // BUSCAR UN GRADO-SECCIÓN ACTIVO
+    // SEGÚN GRADO, SECCIÓN Y AÑO ESCOLAR
+    Optional<GradoSeccion>
+    findByGradoAndSeccionIgnoreCaseAndAnioEscolarAndEstadoTrue(
+            Integer grado,
+            String seccion,
+            Integer anioEscolar
+    );
+
+    // VERIFICAR SI EXISTE UN GRADO-SECCIÓN ACTIVO
+    boolean
+    existsByGradoAndSeccionIgnoreCaseAndAnioEscolarAndEstadoTrue(
+            Integer grado,
+            String seccion,
+            Integer anioEscolar
+    );
+
 }
