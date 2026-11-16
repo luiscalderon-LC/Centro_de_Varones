@@ -1,0 +1,427 @@
+
+<div class="contenedor">
+
+  <!-- ====================================== -->
+  <!-- ENCABEZADO -->
+  <!-- ====================================== -->
+
+  <header class="encabezado">
+    <div>
+      <h2>I.E. N.° 20874</h2>
+      <p>Centro de Varones - Cañete</p>
+    </div>
+
+    <span>DIRECTOR</span>
+  </header>
+
+  <!-- ====================================== -->
+  <!-- TÍTULO DE LA PÁGINA -->
+  <!-- ====================================== -->
+
+  <div class="cabecera-pagina">
+
+    <div>
+      <h1>Gestión de estudiantes</h1>
+
+      <p>
+        Consulte los estudiantes matriculados
+        por grado, sección y año escolar.
+      </p>
+    </div>
+
+    <a
+      routerLink="/panel-director"
+      class="boton-volver"
+    >
+      Volver al panel
+    </a>
+
+  </div>
+
+  <!-- ====================================== -->
+  <!-- FILTROS -->
+  <!-- ====================================== -->
+
+  <section class="tarjeta-filtros">
+
+    <h2>Buscar estudiantes</h2>
+
+    <div class="filtros">
+
+      <!-- BUSCAR POR NOMBRE O DOCUMENTO -->
+      <div class="campo campo-busqueda">
+
+        <label for="busqueda">
+          Nombre o documento
+        </label>
+
+        <input
+          id="busqueda"
+          type="text"
+          [(ngModel)]="busqueda"
+          placeholder="Buscar por nombre, apellido o documento"
+        />
+
+      </div>
+
+      <!-- FILTRO POR GRADO -->
+      <div class="campo">
+
+        <label for="grado">
+          Grado
+        </label>
+
+        <select
+          id="grado"
+          [(ngModel)]="gradoSeleccionado"
+        >
+          <option value="">
+            Todos los grados
+          </option>
+
+          <option
+            *ngFor="let grado of grados"
+            [value]="grado"
+          >
+            {{ grado }}
+          </option>
+        </select>
+
+      </div>
+
+      <!-- FILTRO POR SECCIÓN -->
+      <div class="campo">
+
+        <label for="seccion">
+          Sección
+        </label>
+
+        <select
+          id="seccion"
+          [(ngModel)]="seccionSeleccionada"
+        >
+          <option value="">
+            Todas las secciones
+          </option>
+
+          <option
+            *ngFor="let seccion of secciones"
+            [value]="seccion"
+          >
+            {{ seccion }}
+          </option>
+        </select>
+
+      </div>
+
+      <!-- FILTRO POR AÑO ESCOLAR -->
+      <div class="campo">
+
+        <label for="anio">
+          Año escolar
+        </label>
+
+        <select
+          id="anio"
+          [(ngModel)]="anioSeleccionado"
+        >
+          <option
+            *ngFor="let anio of anios"
+            [ngValue]="anio"
+          >
+            {{ anio }}
+          </option>
+        </select>
+
+      </div>
+
+    </div>
+
+    <!-- ACCIONES DE LOS FILTROS -->
+    <div class="acciones-filtros">
+
+      <button
+        type="button"
+        class="boton-limpiar"
+        (click)="limpiarFiltros()"
+      >
+        Limpiar filtros
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- ====================================== -->
+  <!-- LISTADO DE ESTUDIANTES -->
+  <!-- ====================================== -->
+
+  <section class="tarjeta-listado">
+
+    <div class="encabezado-listado">
+
+      <div>
+        <h2>Listado de estudiantes</h2>
+
+        <p>
+          Total de resultados:
+          <strong>{{ totalEstudiantes }}</strong>
+        </p>
+      </div>
+
+      <div class="acciones-listado">
+
+        <!-- ACTUALIZAR DATOS -->
+        <button
+          type="button"
+          class="boton-limpiar"
+          (click)="cargarEstudiantes()"
+          [disabled]="cargando"
+        >
+          {{ cargando ? 'Actualizando...' : 'Actualizar listado' }}
+        </button>
+
+        <!-- IR A MATRÍCULA -->
+        <a
+          routerLink="/matricular-estudiante"
+          class="boton-matricular"
+        >
+          Matricular estudiante
+        </a>
+
+      </div>
+
+    </div>
+
+    <!-- ================================== -->
+    <!-- MENSAJE DE ERROR DEL BACKEND -->
+    <!-- ================================== -->
+
+    <div
+      *ngIf="errorCarga"
+      class="mensaje-error-carga"
+      role="alert"
+    >
+      {{ errorCarga }}
+    </div>
+
+    <!-- ================================== -->
+    <!-- TABLA DE ESTUDIANTES -->
+    <!-- ================================== -->
+
+    <div class="tabla-contenedor">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>N.°</th>
+            <th>Documento</th>
+            <th>Apellidos y nombres</th>
+            <th>Grado</th>
+            <th>Sección</th>
+            <th>Año</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <!-- ESTUDIANTES REGISTRADOS -->
+          <tr
+            *ngFor="
+              let estudiante of estudiantesFiltrados;
+              let i = index
+            "
+          >
+
+            <td>
+              {{ i + 1 }}
+            </td>
+
+            <td>
+              {{ estudiante.numeroDocumento }}
+            </td>
+
+            <td>
+              {{ estudiante.apellidos }},
+              {{ estudiante.nombres }}
+            </td>
+
+            <td>
+              {{ estudiante.grado }}
+            </td>
+
+            <td>
+              {{ estudiante.seccion }}
+            </td>
+
+            <td>
+              {{ estudiante.anio }}
+            </td>
+
+            <td>
+              <span
+                class="estado"
+                [class.activo]="estudiante.estado"
+                [class.inactivo]="!estudiante.estado"
+              >
+                {{ estudiante.estado ? 'Activo' : 'Inactivo' }}
+              </span>
+            </td>
+
+            <td>
+              <button
+                type="button"
+                class="boton-ver"
+                (click)="verEstudiante(estudiante)"
+              >
+                Ver detalles
+              </button>
+            </td>
+
+          </tr>
+
+          <!-- CARGANDO DATOS -->
+          <tr *ngIf="cargando">
+
+            <td
+              colspan="8"
+              class="sin-resultados"
+            >
+              Cargando estudiantes desde el sistema...
+            </td>
+
+          </tr>
+
+          <!-- NO HAY RESULTADOS -->
+          <tr
+            *ngIf="
+              !cargando &&
+              !errorCarga &&
+              estudiantesFiltrados.length === 0
+            "
+          >
+
+            <td
+              colspan="8"
+              class="sin-resultados"
+            >
+              No se encontraron estudiantes
+              con los filtros seleccionados.
+            </td>
+
+          </tr>
+
+          <!-- ERROR DE CONEXIÓN -->
+          <tr
+            *ngIf="
+              !cargando &&
+              errorCarga
+            "
+          >
+
+            <td
+              colspan="8"
+              class="sin-resultados"
+            >
+              No fue posible cargar el listado.
+              Puedes intentar nuevamente
+              con el botón Actualizar listado.
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+  <!-- ====================================== -->
+  <!-- DETALLES DEL ESTUDIANTE -->
+  <!-- ====================================== -->
+
+  <section
+    class="tarjeta-detalle"
+    *ngIf="estudianteSeleccionado as estudiante"
+  >
+
+    <div class="encabezado-detalle">
+
+      <h2>
+        Datos del estudiante
+      </h2>
+
+      <button
+        type="button"
+        class="boton-cerrar"
+        (click)="cerrarDetalle()"
+      >
+        Cerrar
+      </button>
+
+    </div>
+
+    <div class="detalle-grid">
+
+      <!-- NOMBRES -->
+      <div>
+        <span>Nombres</span>
+        <strong>{{ estudiante.nombres }}</strong>
+      </div>
+
+      <!-- APELLIDOS -->
+      <div>
+        <span>Apellidos</span>
+        <strong>{{ estudiante.apellidos }}</strong>
+      </div>
+
+      <!-- TIPO DE DOCUMENTO -->
+      <div>
+        <span>Tipo de documento</span>
+        <strong>{{ estudiante.tipoDocumento }}</strong>
+      </div>
+
+      <!-- NÚMERO DE DOCUMENTO -->
+      <div>
+        <span>Número de documento</span>
+        <strong>{{ estudiante.numeroDocumento }}</strong>
+      </div>
+
+      <!-- CORREO -->
+      <div>
+        <span>Correo institucional</span>
+        <strong>{{ estudiante.correo }}</strong>
+      </div>
+
+      <!-- GRADO Y SECCIÓN -->
+      <div>
+        <span>Grado y sección</span>
+        <strong>
+          {{ estudiante.grado }} - {{ estudiante.seccion }}
+        </strong>
+      </div>
+
+      <!-- AÑO ESCOLAR -->
+      <div>
+        <span>Año escolar</span>
+        <strong>{{ estudiante.anio }}</strong>
+      </div>
+
+      <!-- ESTADO -->
+      <div>
+        <span>Estado</span>
+        <strong>
+          {{ estudiante.estado ? 'Activo' : 'Inactivo' }}
+        </strong>
+      </div>
+
+    </div>
+
+  </section>
+
+</div>

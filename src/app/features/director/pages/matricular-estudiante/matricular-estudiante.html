@@ -1,0 +1,360 @@
+
+<div class="contenedor">
+
+  <!-- VOLVER AL PANEL -->
+  <a routerLink="/panel-director" class="volver">
+    ← Volver al panel
+  </a>
+
+  <div class="formulario">
+
+    <!-- ENCABEZADO -->
+    <div class="encabezado-formulario">
+      <h1>Matricular estudiante</h1>
+
+      <p>
+        Registra los datos del estudiante,
+        asigna su grado, sección y acceso al sistema.
+      </p>
+    </div>
+
+    <!-- FORMULARIO -->
+    <form
+      (ngSubmit)="registrar()"
+      novalidate
+    >
+
+      <!-- ================================== -->
+      <!-- 1. DATOS DEL ESTUDIANTE -->
+      <!-- ================================== -->
+
+      <h3 class="titulo-seccion">
+        Datos del estudiante
+      </h3>
+
+      <!-- TIPO DE DOCUMENTO -->
+      <label for="tipoDocumento">
+        Tipo de documento
+      </label>
+
+      <select
+        id="tipoDocumento"
+        name="tipoDocumento"
+        [(ngModel)]="estudiante.tipoDocumento"
+        (ngModelChange)="cambiarTipoDocumento()"
+        [disabled]="guardando"
+        required
+      >
+        @for (tipo of tiposDocumento; track tipo.valor) {
+          <option [value]="tipo.valor">
+            {{ tipo.nombre }}
+          </option>
+        }
+      </select>
+
+      <!-- NÚMERO DE DOCUMENTO -->
+      <label for="dni">
+        Número de documento
+      </label>
+
+      <input
+        type="text"
+        id="dni"
+        name="dni"
+        [(ngModel)]="estudiante.dni"
+        (ngModelChange)="limpiarDocumento()"
+        (blur)="validarDocumento()"
+        [maxlength]="estudiante.tipoDocumento === 'DNI' ? 8 : 9"
+        inputmode="numeric"
+        [placeholder]="
+          estudiante.tipoDocumento === 'DNI'
+            ? 'Ingrese 8 dígitos'
+            : 'Ingrese 9 dígitos'
+        "
+        [class.campo-invalido]="errores['dni']"
+        [disabled]="guardando"
+        autocomplete="off"
+        required
+      />
+
+      @if (errores['dni']) {
+        <small class="error-campo">
+          {{ errores['dni'] }}
+        </small>
+      }
+
+      <!-- NOMBRES -->
+      <label for="nombres">
+        Nombres
+      </label>
+
+      <input
+        type="text"
+        id="nombres"
+        name="nombres"
+        [(ngModel)]="estudiante.nombres"
+        (blur)="validarNombres()"
+        [class.campo-invalido]="errores['nombres']"
+        [disabled]="guardando"
+        maxlength="60"
+        placeholder="Nombres completos"
+        autocomplete="off"
+        required
+      />
+
+      @if (errores['nombres']) {
+        <small class="error-campo">
+          {{ errores['nombres'] }}
+        </small>
+      }
+
+      <!-- APELLIDOS -->
+      <label for="apellidos">
+        Apellidos
+      </label>
+
+      <input
+        type="text"
+        id="apellidos"
+        name="apellidos"
+        [(ngModel)]="estudiante.apellidos"
+        (blur)="validarApellidos()"
+        [class.campo-invalido]="errores['apellidos']"
+        [disabled]="guardando"
+        maxlength="60"
+        placeholder="Apellidos completos"
+        autocomplete="off"
+        required
+      />
+
+      @if (errores['apellidos']) {
+        <small class="error-campo">
+          {{ errores['apellidos'] }}
+        </small>
+      }
+
+      <!-- CORREO INSTITUCIONAL -->
+      <label for="correo">
+        Correo institucional
+      </label>
+
+      <input
+        type="email"
+        id="correo"
+        name="correo"
+        [(ngModel)]="estudiante.correo"
+        (blur)="validarCorreo()"
+        [class.campo-invalido]="errores['correo']"
+        [disabled]="guardando"
+        maxlength="100"
+        placeholder="ejemplo@centrovarones.edu.pe"
+        autocomplete="off"
+        required
+      />
+
+      @if (errores['correo']) {
+        <small class="error-campo">
+          {{ errores['correo'] }}
+        </small>
+      }
+
+      <!-- ================================== -->
+      <!-- 2. INFORMACIÓN DE MATRÍCULA -->
+      <!-- ================================== -->
+
+      <h3 class="titulo-seccion">
+        Información de matrícula
+      </h3>
+
+      <div class="fila">
+
+        <!-- GRADO -->
+        <div>
+          <label for="grado">
+            Grado
+          </label>
+
+          <select
+            id="grado"
+            name="grado"
+            [(ngModel)]="estudiante.grado"
+            (blur)="validarGrado()"
+            [class.campo-invalido]="errores['grado']"
+            [disabled]="guardando"
+            required
+          >
+            <option value="">
+              Seleccionar grado
+            </option>
+
+            @for (grado of grados; track grado) {
+              <option [value]="grado">
+                {{ grado }}
+              </option>
+            }
+          </select>
+
+          @if (errores['grado']) {
+            <small class="error-campo">
+              {{ errores['grado'] }}
+            </small>
+          }
+        </div>
+
+        <!-- SECCIÓN -->
+        <div>
+          <label for="seccion">
+            Sección
+          </label>
+
+          <select
+            id="seccion"
+            name="seccion"
+            [(ngModel)]="estudiante.seccion"
+            (blur)="validarSeccion()"
+            [class.campo-invalido]="errores['seccion']"
+            [disabled]="guardando"
+            required
+          >
+            <option value="">
+              Seleccionar sección
+            </option>
+
+            @for (seccion of secciones; track seccion) {
+              <option [value]="seccion">
+                Sección {{ seccion }}
+              </option>
+            }
+          </select>
+
+          @if (errores['seccion']) {
+            <small class="error-campo">
+              {{ errores['seccion'] }}
+            </small>
+          }
+        </div>
+
+      </div>
+
+      <!-- AÑO ESCOLAR -->
+      <label for="anio">
+        Año escolar
+      </label>
+
+      <select
+        id="anio"
+        name="anio"
+        [(ngModel)]="estudiante.anio"
+        (blur)="validarAnio()"
+        [class.campo-invalido]="errores['anio']"
+        [disabled]="guardando"
+        required
+      >
+        @for (anio of anios; track anio) {
+          <option [ngValue]="anio">
+            {{ anio }}
+          </option>
+        }
+      </select>
+
+      @if (errores['anio']) {
+        <small class="error-campo">
+          {{ errores['anio'] }}
+        </small>
+      }
+
+      <!-- ================================== -->
+      <!-- 3. ACCESO DEL ESTUDIANTE -->
+      <!-- ================================== -->
+
+      <h3 class="titulo-seccion">
+        Acceso del estudiante
+      </h3>
+
+      <p class="informacion-contrasena">
+        Crea una contraseña inicial para que el
+        estudiante pueda acceder al sistema.
+        Debe contener entre 8 y 72 caracteres.
+      </p>
+
+      <!-- CONTRASEÑA -->
+      <label for="contrasena">
+        Nueva contraseña
+      </label>
+
+      <input
+        type="password"
+        id="contrasena"
+        name="contrasena"
+        [(ngModel)]="contrasena"
+        (blur)="validarContrasena()"
+        [class.campo-invalido]="errores['contrasena']"
+        [disabled]="guardando"
+        placeholder="Mínimo 8 caracteres"
+        autocomplete="new-password"
+        minlength="8"
+        maxlength="72"
+        required
+      />
+
+      <!-- CONFIRMAR CONTRASEÑA -->
+      <label for="confirmarContrasena">
+        Confirmar contraseña
+      </label>
+
+      <input
+        type="password"
+        id="confirmarContrasena"
+        name="confirmarContrasena"
+        [(ngModel)]="confirmarContrasena"
+        (blur)="validarContrasena()"
+        [class.campo-invalido]="errores['contrasena']"
+        [disabled]="guardando"
+        placeholder="Repite la contraseña"
+        autocomplete="new-password"
+        minlength="8"
+        maxlength="72"
+        required
+      />
+
+      @if (errores['contrasena']) {
+        <small class="error-campo">
+          {{ errores['contrasena'] }}
+        </small>
+      }
+
+      <!-- ================================== -->
+      <!-- 4. MENSAJES -->
+      <!-- ================================== -->
+
+      @if (mensaje) {
+        <div
+          class="mensaje"
+          [class.error]="esError"
+          role="status"
+          aria-live="polite"
+        >
+          {{ mensaje }}
+        </div>
+      }
+
+      <!-- ================================== -->
+      <!-- 5. BOTÓN REGISTRAR -->
+      <!-- ================================== -->
+
+      <button
+        type="submit"
+        [disabled]="guardando"
+      >
+        @if (guardando) {
+          Guardando matrícula...
+        } @else {
+          Registrar matrícula
+        }
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
